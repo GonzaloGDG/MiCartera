@@ -78,7 +78,7 @@ form.addEventListener('submit', async (e) => {
         rol: data.rol
       }));
       // Redirigir al dashboard
-      window.location.href = 'index.html';
+      window.location.href = 'cartera.html';
     } else {
       loginError.textContent = data.mensaje || 'Credenciales incorrectas';
       loginError.style.display = 'block';

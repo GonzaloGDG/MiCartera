@@ -1,0 +1,123 @@
+
+[
+  {
+    "usuario": "admin",
+    "ticker": "ANA.MC",
+    "nombre": "Acciona",
+    "num_titulos": 100,
+    "precio_compra": 122.10,
+    "total_invertido": 12210.00
+  },
+  {
+    "usuario": "admin",
+    "ticker": "ACX.MC",
+    "nombre": "Acerinox",
+    "num_titulos": 1000,
+    "precio_compra": 9.944,
+    "total_invertido": 9944.00
+  },
+  {
+    "usuario": "admin",
+    "ticker": "A3M.MC",
+    "nombre": "Atresmedia",
+    "num_titulos": 1000,
+    "precio_compra": 8.204,
+    "total_invertido": 8204.00
+  },
+  {
+    "usuario": "admin",
+    "ticker": "SAB.MC",
+    "nombre": "Banco Sabadell",
+    "num_titulos": 30000,
+    "precio_compra": 0.819,
+    "total_invertido": 24570.00
+  },
+  {
+    "usuario": "admin",
+    "ticker": "BBVA.MC",
+    "nombre": "BBVA",
+    "num_titulos": 2500,
+    "precio_compra": 5.455,
+    "total_invertido": 13637.50
+  },
+  {
+    "usuario": "admin",
+    "ticker": "CABK.MC",
+    "nombre": "CaixaBank",
+    "num_titulos": 8000,
+    "precio_compra": 3.910,
+    "total_invertido": 31280.00
+  },
+  {
+    "usuario": "admin",
+    "ticker": "CLNX.MC",
+    "nombre": "Cellnex",
+    "num_titulos": 200,
+    "precio_compra": 27.198,
+    "total_invertido": 5439.60
+  },
+  {
+    "usuario": "admin",
+    "ticker": "EBRO.MC",
+    "nombre": "Ebro Foods",
+    "num_titulos": 500,
+    "precio_compra": 18.000,
+    "total_invertido": 9000.00
+  },
+  {
+    "usuario": "admin",
+    "ticker": "GEST.MC",
+    "nombre": "Gestamp Automoción",
+    "num_titulos": 5000,
+    "precio_compra": 2.782,
+    "total_invertido": 13910.00
+  },
+  {
+    "usuario": "admin",
+    "ticker": "LDA.MC",
+    "nombre": "Línea Directa",
+    "num_titulos": 3000,
+    "precio_compra": 1.033,
+    "total_invertido": 3099.00
+  },
+  {
+    "usuario": "admin",
+    "ticker": "LOG.MC",
+    "nombre": "Logista Integral",
+    "num_titulos": 400,
+    "precio_compra": 28.379,
+    "total_invertido": 11351.60
+  },
+  {
+    "usuario": "admin",
+    "ticker": "PSG.MC",
+    "nombre": "Prosegur",
+    "num_titulos": 5000,
+    "precio_compra": 2.130,
+    "total_invertido": 10650.00
+  },
+  {
+    "usuario": "admin",
+    "ticker": "TEF.MC",
+    "nombre": "Telefónica",
+    "num_titulos": 4000,
+    "precio_compra": 5.311,
+    "total_invertido": 21244.00
+  },
+  {
+    "usuario": "admin",
+    "ticker": "VIS.MC",
+    "nombre": "Viscofan",
+    "num_titulos": 200,
+    "precio_compra": 55.968,
+    "total_invertido": 11193.60
+  },
+  {
+    "usuario": "admin",
+    "ticker": "VID.MC",
+    "nombre": "Vidrala",
+    "num_titulos": 100,
+    "precio_compra": 78.420,
+    "total_invertido": 7842.00
+  }
+]
