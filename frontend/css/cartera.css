@@ -1,0 +1,230 @@
+
+/* ── Variables ──────────────────────────────────────── */
+:root {
+  --color-bg:        #0f172a;
+  --color-surface:   #1e293b;
+  --color-surface2:  #273549;
+  --color-primary:   #3b82f6;
+  --color-positive:  #22c55e;
+  --color-negative:  #ef4444;
+  --color-text:      #f1f5f9;
+  --color-text-muted:#94a3b8;
+  --color-border:    #334155;
+  --font-base:       'Inter', sans-serif;
+  --radius:          10px;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: var(--font-base);
+  background: var(--color-bg);
+  color: var(--color-text);
+  min-height: 100vh;
+}
+
+/* ── Navbar ─────────────────────────────────────────── */
+.navbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px;
+  height: 60px;
+  background: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.navbar-brand {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.logo-icon { font-size: 1.4rem; }
+
+.logo-text {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--color-primary);
+}
+
+.navbar-user {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  font-size: 0.88rem;
+  color: var(--color-text-muted);
+}
+
+.btn-logout {
+  background: transparent;
+  border: 1px solid var(--color-border);
+  color: var(--color-text-muted);
+  border-radius: 6px;
+  padding: 6px 12px;
+  font-size: 0.82rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.btn-logout:hover {
+  border-color: var(--color-negative);
+  color: var(--color-negative);
+}
+
+/* ── Contenido ──────────────────────────────────────── */
+.main-content {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 32px 24px;
+}
+
+/* ── Cabecera ───────────────────────────────────────── */
+.page-header {
+  display: flex;
+  align-items: baseline;
+  gap: 16px;
+  margin-bottom: 28px;
+}
+
+.page-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+.last-update {
+  font-size: 0.78rem;
+  color: var(--color-text-muted);
+}
+
+/* ── Tarjetas resumen ───────────────────────────────── */
+.summary-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  margin-bottom: 32px;
+}
+
+.card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  padding: 20px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.card-label {
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--color-text-muted);
+}
+
+.card-value {
+  font-size: 1.4rem;
+  font-weight: 700;
+}
+
+/* ── Tabla ──────────────────────────────────────────── */
+.table-wrapper {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+.table-toolbar {
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.input-search {
+  background: var(--color-surface2);
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  color: var(--color-text);
+  font-family: var(--font-base);
+  font-size: 0.88rem;
+  padding: 8px 14px;
+  width: 280px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+.input-search:focus { border-color: var(--color-primary); }
+.input-search::placeholder { color: var(--color-text-muted); }
+
+.table-scroll { overflow-x: auto; }
+
+.tabla-cartera {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.88rem;
+}
+
+.tabla-cartera thead tr {
+  background: var(--color-surface2);
+}
+
+.tabla-cartera th {
+  padding: 12px 16px;
+  text-align: left;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--color-text-muted);
+  white-space: nowrap;
+  cursor: pointer;
+  user-select: none;
+  transition: color 0.2s;
+}
+.tabla-cartera th:hover { color: var(--color-text); }
+.tabla-cartera th.text-right { text-align: right; }
+
+.tabla-cartera tbody tr {
+  border-top: 1px solid var(--color-border);
+  transition: background 0.15s;
+}
+.tabla-cartera tbody tr:hover { background: var(--color-surface2); }
+
+.tabla-cartera td {
+  padding: 14px 16px;
+  white-space: nowrap;
+}
+.tabla-cartera td.text-right { text-align: right; }
+
+/* ── Colores positivo/negativo ──────────────────────── */
+.positivo { color: var(--color-positive); font-weight: 600; }
+.negativo { color: var(--color-negative); font-weight: 600; }
+.neutro   { color: var(--color-text-muted); }
+
+/* ── Nombre + ticker ────────────────────────────────── */
+.nombre-ticker { display: flex; flex-direction: column; gap: 2px; }
+.nombre-empresa { font-weight: 500; }
+.badge-ticker {
+  display: inline-block;
+  background: var(--color-surface2);
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+  padding: 1px 6px;
+  font-size: 0.72rem;
+  color: var(--color-text-muted);
+  font-family: monospace;
+}
+
+/* ── Fila loading / vacío ───────────────────────────── */
+.fila-loading td, .fila-vacia td {
+  text-align: center;
+  padding: 40px;
+  color: var(--color-text-muted);
+}
+
+/* ── Responsive ─────────────────────────────────────── */
+@media (max-width: 768px) {
+  .main-content { padding: 16px; }
+  .input-search { width: 100%; }
+}

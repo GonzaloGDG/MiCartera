@@ -1,0 +1,90 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Mi Cartera — CarteraApp</title>
+  <link rel="stylesheet" href="css/main.css"/>
+  <link rel="stylesheet" href="css/cartera.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+</head>
+<body>
+
+  <!-- ── Navbar ─────────────────────────────────────── -->
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <span class="logo-icon">📈</span>
+      <span class="logo-text">CarteraApp</span>
+    </div>
+    <div class="navbar-user">
+      <span id="nombreUsuario"></span>
+      <button class="btn-logout" id="btnLogout">Cerrar sesión</button>
+    </div>
+  </nav>
+
+  <!-- ── Contenido principal ────────────────────────── -->
+  <main class="main-content">
+
+    <!-- Cabecera -->
+    <div class="page-header">
+      <h1 class="page-title">Mi Cartera</h1>
+      <span class="last-update" id="lastUpdate"></span>
+    </div>
+
+    <!-- Tarjetas resumen -->
+    <div class="summary-cards">
+      <div class="card">
+        <span class="card-label">Total Invertido</span>
+        <span class="card-value" id="totalInvertido">—</span>
+      </div>
+      <div class="card">
+        <span class="card-label">Valor Actual</span>
+        <span class="card-value" id="totalActual">—</span>
+      </div>
+      <div class="card">
+        <span class="card-label">Ganancia / Pérdida</span>
+        <span class="card-value" id="totalDiferencia">—</span>
+      </div>
+      <div class="card">
+        <span class="card-label">Rentabilidad</span>
+        <span class="card-value" id="totalRentabilidad">—</span>
+      </div>
+    </div>
+
+    <!-- Tabla de posiciones -->
+    <div class="table-wrapper">
+      <div class="table-toolbar">
+        <input type="text" id="buscador" class="input-search" placeholder="🔍 Buscar por nombre o ticker..."/>
+      </div>
+
+      <div class="table-scroll">
+        <table class="tabla-cartera" id="tablaCartera">
+          <thead>
+            <tr>
+              <th data-col="nombre">Nombre</th>
+              <th data-col="ticker">Ticker</th>
+              <th data-col="num_titulos" class="text-right">Títulos</th>
+              <th data-col="precio_compra" class="text-right">P. Compra</th>
+              <th data-col="precio_actual" class="text-right">P. Actual</th>
+              <th data-col="variacion_hoy" class="text-right">Var. Hoy %</th>
+              <th data-col="variacion_compra" class="text-right">Var. Compra %</th>
+              <th data-col="total_invertido" class="text-right">Total Inv.</th>
+              <th data-col="total_actual" class="text-right">Total Act.</th>
+              <th data-col="diferencia" class="text-right">Diferencia</th>
+            </tr>
+          </thead>
+          <tbody id="tablaBody">
+            <tr class="fila-loading">
+              <td colspan="10">⏳ Cargando cartera...</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </main>
+
+  <script src="js/cartera.js"></script>
+</body>
+</html>
