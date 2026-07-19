@@ -5,6 +5,7 @@ Main application for MiCartera API.
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.routes.auth import router as auth_router
+from app.routes.cartera import router as cartera_router
 
 app = FastAPI(
     title="MiCartera API",
@@ -21,6 +22,7 @@ app.add_middleware(
 )
 
 app.include_router(auth_router, prefix="/api")
+app.include_router(cartera_router, prefix="/api")
 
 
 @app.get("/")

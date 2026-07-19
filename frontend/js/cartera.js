@@ -1,5 +1,5 @@
 
-const API_BASE = 'http://localhost:5000/api';
+const API_BASE = "http://localhost:8000/api";
 
 // ── Verificar sesión ───────────────────────────────────
 const sesion = JSON.parse(sessionStorage.getItem('usuario') || 'null');
