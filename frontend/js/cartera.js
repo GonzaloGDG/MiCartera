@@ -1,21 +1,12 @@
 
-const API_BASE = "http://localhost:8000/api";
+const API_BASE = 'http://localhost:5000/api';
 
-// ── Verificar sesión ───────────────────────────────────
+// ── Sesión (navbar.js ya verifica si no hay sesión) ────
 const sesion = JSON.parse(sessionStorage.getItem('usuario') || 'null');
-if (!sesion) {
-  window.location.href = 'login.html';
-}
-
-document.getElementById('nombreUsuario').textContent = `👤 ${sesion.nombre}`;
-
-document.getElementById('btnLogout').addEventListener('click', () => {
-  sessionStorage.removeItem('usuario');
-  window.location.href = 'login.html';
-});
+const usuarioLogin = sesion?.username || 'admin';
 
 // ── Formateo ───────────────────────────────────────────
-const fmt = new Intl.NumberFormat('es-ES', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+const fmt    = new Intl.NumberFormat('es-ES', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 const fmtEur = (v) => `${fmt.format(v)} €`;
 const fmtPct = (v) => `${v > 0 ? '+' : ''}${fmt.format(v)} %`;
 
@@ -33,7 +24,7 @@ async function cargarCartera() {
   tbody.innerHTML = '<tr class="fila-loading"><td colspan="10">⏳ Cargando cartera...</td></tr>';
 
   try {
-    const res  = await fetch(`${API_BASE}/cartera?usuario=${sesion.usuario || 'admin'}`);
+    const res  = await fetch(`${API_BASE}/cartera?usuario=${usuarioLogin}`);
     const data = await res.json();
 
     if (!data.ok) throw new Error(data.mensaje);
@@ -57,36 +48,44 @@ function renderTabla(datos) {
     return;
   }
 
-  tbody.innerHTML = datos.map(p => `
-    <tr>
-      <td>
-        <div class="nombre-ticker">
-          <span class="nombre-empresa">${p.nombre}</span>
-          <span class="badge-ticker">${p.ticker}</span>
-        </div>
-      </td>
-      <td>${p.ticker}</td>
-      <td class="text-right">${p.num_titulos}</td>
-      <td class="text-right">${fmtEur(p.precio_compra)}</td>
-      <td class="text-right">${fmtEur(p.precio_actual)}</td>
-      <td class="text-right ${claseVariacion(p.variacion_hoy)}">${fmtPct(p.variacion_hoy)}</td>
-      <td class="text-right ${claseVariacion(p.variacion_compra)}">${fmtPct(p.variacion_compra)}</td>
-      <td class="text-right">${fmtEur(p.total_invertido)}</td>
-      <td class="text-right">${fmtEur(p.total_actual)}</td>
-      <td class="text-right ${claseVariacion(p.diferencia)}">${fmtEur(p.diferencia)}</td>
-    </tr>
-  `).join('');
+  tbody.innerHTML = datos.map(p => {
+    const sinDatos     = p.sin_datos;
+    const precioActual = sinDatos ? '—' : fmtEur(p.precio_actual);
+    const varHoy       = sinDatos ? '—' : `<span class="${claseVariacion(p.variacion_hoy)}">${fmtPct(p.variacion_hoy)}</span>`;
+    const varCompra    = sinDatos ? '—' : `<span class="${claseVariacion(p.variacion_compra)}">${fmtPct(p.variacion_compra)}</span>`;
+    const totalActual  = sinDatos ? '—' : fmtEur(p.total_actual);
+    const diferencia   = sinDatos ? '—' : `<span class="${claseVariacion(p.diferencia)}">${fmtEur(p.diferencia)}</span>`;
+
+    return `
+      <tr class="${sinDatos ? 'fila-sin-datos' : ''}">
+        <td>
+          <div class="nombre-ticker">
+            <span class="nombre-empresa">${p.nombre}</span>
+          </div>
+        </td>
+        <td><span class="badge-ticker">${p.ticker}</span></td>
+        <td class="text-right">${p.num_titulos}</td>
+        <td class="text-right">${fmtEur(p.precio_compra)}</td>
+        <td class="text-right">${precioActual}</td>
+        <td class="text-right">${varHoy}</td>
+        <td class="text-right">${varCompra}</td>
+        <td class="text-right">${fmtEur(p.total_invertido)}</td>
+        <td class="text-right">${totalActual}</td>
+        <td class="text-right">${diferencia}</td>
+      </tr>
+    `;
+  }).join('');
 }
 
 // ── Renderizar tarjetas resumen ────────────────────────
 function renderResumen(datos) {
-  const totalInv  = datos.reduce((s, p) => s + p.total_invertido, 0);
-  const totalAct  = datos.reduce((s, p) => s + p.total_actual, 0);
-  const totalDif  = totalAct - totalInv;
-  const rentPct   = totalInv ? (totalDif / totalInv * 100) : 0;
+  const totalInv = datos.reduce((s, p) => s + p.total_invertido, 0);
+  const totalAct = datos.reduce((s, p) => s + (p.total_actual || 0), 0);
+  const totalDif = totalAct - totalInv;
+  const rentPct  = totalInv ? (totalDif / totalInv * 100) : 0;
 
-  document.getElementById('totalInvertido').textContent   = fmtEur(totalInv);
-  document.getElementById('totalActual').textContent      = fmtEur(totalAct);
+  document.getElementById('totalInvertido').textContent = fmtEur(totalInv);
+  document.getElementById('totalActual').textContent    = fmtEur(totalAct);
 
   const elDif  = document.getElementById('totalDiferencia');
   const elRent = document.getElementById('totalRentabilidad');

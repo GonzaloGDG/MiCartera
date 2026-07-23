@@ -1,0 +1,121 @@
+
+/* ── Topbar ─────────────────────────────────────────── */
+:root {
+  --topbar-height: 56px;
+  --color-bg:        #0f172a;
+  --color-surface:   #1e293b;
+  --color-surface2:  #273549;
+  --color-primary:   #3b82f6;
+  --color-text:      #f1f5f9;
+  --color-text-muted:#94a3b8;
+  --color-border:    #334155;
+  --font-base:       'Inter', sans-serif;
+}
+
+.topbar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 20px;
+  height: var(--topbar-height);
+  background: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+  position: sticky;
+  top: 0;
+  z-index: 200;
+  font-family: var(--font-base);
+}
+
+/* ── Brand ──────────────────────────────────────────── */
+.topbar-brand {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-right: 12px;
+  flex-shrink: 0;
+}
+
+.topbar-logo  { font-size: 1.3rem; }
+
+.topbar-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--color-primary);
+  white-space: nowrap;
+}
+
+/* ── Botones de navegación ──────────────────────────── */
+.topbar-nav {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex: 1;
+  overflow-x: auto;
+  scrollbar-width: none;   /* Firefox */
+}
+.topbar-nav::-webkit-scrollbar { display: none; }  /* Chrome */
+
+.nav-btn {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 14px;
+  border-radius: 6px;
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: var(--color-text-muted);
+  text-decoration: none;
+  white-space: nowrap;
+  transition: background 0.15s, color 0.15s;
+  border: 1px solid transparent;
+}
+
+.nav-btn:hover {
+  background: var(--color-surface2);
+  color: var(--color-text);
+}
+
+.nav-btn--active {
+  background: rgba(59, 130, 246, 0.15);
+  color: var(--color-primary);
+  border-color: rgba(59, 130, 246, 0.3);
+  font-weight: 600;
+}
+
+/* ── Usuario + logout ───────────────────────────────── */
+.topbar-user {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0;
+  margin-left: 12px;
+}
+
+.topbar-username {
+  font-size: 0.82rem;
+  color: var(--color-text-muted);
+  white-space: nowrap;
+}
+
+.btn-logout {
+  background: transparent;
+  border: 1px solid var(--color-border);
+  color: var(--color-text-muted);
+  border-radius: 6px;
+  padding: 5px 12px;
+  font-size: 0.78rem;
+  font-family: var(--font-base);
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+.btn-logout:hover {
+  border-color: #ef4444;
+  color: #ef4444;
+}
+
+/* ── Responsive ─────────────────────────────────────── */
+@media (max-width: 900px) {
+  .topbar-title { display: none; }
+  .topbar-username { display: none; }
+  .nav-btn { padding: 6px 10px; font-size: 0.78rem; }
+}

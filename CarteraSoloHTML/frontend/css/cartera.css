@@ -228,3 +228,8 @@ body {
   .main-content { padding: 16px; }
   .input-search { width: 100%; }
 }
+
+/* Espacio para que el contenido no quede bajo la navbar sticky */
+.main-content {
+  padding-top: calc(var(--topbar-height, 56px) + 24px);
+}

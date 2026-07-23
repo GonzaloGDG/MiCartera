@@ -5,25 +5,14 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Mi Cartera — CarteraApp</title>
-  <link rel="stylesheet" href="css/main.css"/>
-  <link rel="stylesheet" href="css/cartera.css"/>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="css/navbar.css"/>
+  <link rel="stylesheet" href="css/cartera.css"/>
 </head>
 <body>
 
-  <!-- ── Navbar ─────────────────────────────────────── -->
-  <nav class="navbar">
-    <div class="navbar-brand">
-      <span class="logo-icon">📈</span>
-      <span class="logo-text">CarteraApp</span>
-    </div>
-    <div class="navbar-user">
-      <span id="nombreUsuario"></span>
-      <button class="btn-logout" id="btnLogout">Cerrar sesión</button>
-    </div>
-  </nav>
+  <!-- La navbar se inyecta aquí automáticamente por navbar.js -->
 
-  <!-- ── Contenido principal ────────────────────────── -->
   <main class="main-content">
 
     <!-- Cabecera -->
@@ -64,14 +53,14 @@
             <tr>
               <th data-col="nombre">Nombre</th>
               <th data-col="ticker">Ticker</th>
-              <th data-col="num_titulos" class="text-right">Títulos</th>
-              <th data-col="precio_compra" class="text-right">P. Compra</th>
-              <th data-col="precio_actual" class="text-right">P. Actual</th>
-              <th data-col="variacion_hoy" class="text-right">Var. Hoy %</th>
+              <th data-col="num_titulos"      class="text-right">Títulos</th>
+              <th data-col="precio_compra"    class="text-right">P. Compra</th>
+              <th data-col="precio_actual"    class="text-right">P. Actual</th>
+              <th data-col="variacion_hoy"    class="text-right">Var. Hoy %</th>
               <th data-col="variacion_compra" class="text-right">Var. Compra %</th>
-              <th data-col="total_invertido" class="text-right">Total Inv.</th>
-              <th data-col="total_actual" class="text-right">Total Act.</th>
-              <th data-col="diferencia" class="text-right">Diferencia</th>
+              <th data-col="total_invertido"  class="text-right">Total Inv.</th>
+              <th data-col="total_actual"     class="text-right">Total Act.</th>
+              <th data-col="diferencia"       class="text-right">Diferencia</th>
             </tr>
           </thead>
           <tbody id="tablaBody">
@@ -85,6 +74,7 @@
 
   </main>
 
+  <script src="components/navbar.js"></script>
   <script src="js/cartera.js"></script>
 </body>
 </html>
