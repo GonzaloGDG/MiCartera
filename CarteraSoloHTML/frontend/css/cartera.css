@@ -233,3 +233,26 @@ body {
 .main-content {
   padding-top: calc(var(--topbar-height, 56px) + 24px);
 }
+
+
+/* ── Ordenación de columnas ─────────────────────────── */
+.tabla-cartera th[data-col] {
+  cursor: pointer;
+  user-select: none;
+  transition: color 0.15s, background 0.15s;
+}
+
+.tabla-cartera th[data-col]:hover {
+  color: var(--color-text);
+  background: rgba(255,255,255,0.04);
+}
+
+.tabla-cartera th.th-activo {
+  color: var(--color-primary);
+}
+
+.sort-icon {
+  font-size: 0.7rem;
+  margin-left: 2px;
+  color: var(--color-primary);
+}
