@@ -16,10 +16,17 @@ def obtener_cartera(usuario: str):
     tickers = get_tickers()
 
     resultado = []
+    ultimo_update = None
 
     for pos in posiciones:
 
         ticker = tickers.get(pos["ticker"], {})
+
+        if ticker.get("ultimo_update"):
+            fecha = ticker["ultimo_update"]
+
+            if ultimo_update is None or fecha > ultimo_update:
+                ultimo_update = fecha
 
         precio_actual = ticker.get("precio_actual") or 0
         precio_compra = pos["precio_compra"]
@@ -60,4 +67,5 @@ def obtener_cartera(usuario: str):
     return CarteraResponse(
         ok=True,
         datos=resultado,
+        ultimo_update=ultimo_update,
     )

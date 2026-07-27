@@ -18,3 +18,4 @@ class Posicion(BaseModel):
 class CarteraResponse(BaseModel):
     ok: bool
     datos: list[Posicion]
+    ultimo_update: str | None = None

@@ -1,37 +1,48 @@
 """
-Rutas de cotizaciones.
-La lógica de negocio está en services/yahoo_finance.py
+Rutas de cotizaciones de MiCartera.
 """
 
-from fastapi import APIRouter, Query
+from fastapi import APIRouter
+from app.tasks.ticker_updater import actualizar_precios
 
-from app.services.yahoo_finance import (
-    get_cotizacion,
-    get_historico,
+from app.schemas.cotizaciones import (
+    CotizacionResponse,
+    HistoricoResponse,
 )
+
+from app.services.cotizaciones_service import (
+    obtener_cotizacion,
+    obtener_historico,
+)
+
 
 router = APIRouter()
 
 
-@router.get("/cotizacion/{ticker}")
+@router.get(
+    "/cotizacion/{ticker}",
+    response_model=CotizacionResponse,
+)
 def cotizacion(ticker: str):
-
-    resultado = get_cotizacion(ticker)
-
-    return resultado
+    return obtener_cotizacion(ticker)
 
 
-@router.get("/historico/{ticker}")
+@router.get(
+    "/historico/{ticker}",
+    response_model=HistoricoResponse,
+)
 def historico(
     ticker: str,
-    periodo: str = Query("1mo"),
-    intervalo: str = Query("1d")
+    periodo: str = "1mo",
+    intervalo: str = "1d",
 ):
-
-    resultado = get_historico(
+    return obtener_historico(
         ticker,
         periodo,
-        intervalo
+        intervalo,
     )
 
-    return resultado
+@router.post("/cotizaciones/actualizar")
+def actualizar_cotizaciones():
+
+    return actualizar_precios()

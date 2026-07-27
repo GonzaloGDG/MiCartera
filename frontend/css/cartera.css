@@ -74,6 +74,21 @@ body {
   color: var(--color-negative);
 }
 
+.btn-update {
+  background: transparent;
+  border: 1px solid var(--color-border);
+  color: var(--color-text-muted);
+  border-radius: 6px;
+  padding: 6px 12px;
+  font-size: 0.82rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.btn-update:hover {
+  border-color: var(--color-positive);
+  color: var(--color-positive);
+}
+
 /* ── Contenido ──────────────────────────────────────── */
 .main-content {
   max-width: 1400px;
@@ -81,10 +96,11 @@ body {
   padding: 32px 24px;
 }
 
-/* ── Cabecera ───────────────────────────────────────── */
-.page-header {
+/* ── Pie ───────────────────────────────────────── */
+.page-foot {
   display: flex;
   align-items: baseline;
+  justify-content: flex-end;
   gap: 16px;
   margin-bottom: 28px;
 }

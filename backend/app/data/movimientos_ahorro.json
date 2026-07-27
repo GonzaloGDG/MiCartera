@@ -1,0 +1,44 @@
+[
+  {
+    "id": 1,
+    "usuario": "admin",
+    "tipo": "ingreso",
+    "importe": 10000.0,
+    "fecha": "2024-01-15"
+  },
+  {
+    "id": 2,
+    "usuario": "admin",
+    "tipo": "ingreso",
+    "importe": 5000.0,
+    "fecha": "2024-03-20"
+  },
+  {
+    "id": 3,
+    "usuario": "admin",
+    "tipo": "retirada",
+    "importe": 2000.0,
+    "fecha": "2025-06-10"
+  },
+  {
+    "id": 4,
+    "usuario": "admin",
+    "tipo": "ingreso",
+    "importe": 3000.0,
+    "fecha": "2026-02-12"
+  },
+  {
+    "id": 5,
+    "usuario": "admin",
+    "tipo": "ingreso",
+    "importe": 5000.0,
+    "fecha": "2026-07-26"
+  },
+  {
+    "id": 6,
+    "usuario": "admin",
+    "tipo": "ingreso",
+    "importe": 200.0,
+    "fecha": "2025-07-26"
+  }
+]

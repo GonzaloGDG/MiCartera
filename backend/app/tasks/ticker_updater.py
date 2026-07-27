@@ -16,7 +16,7 @@ import os
 from datetime import datetime
 from time import sleep
 
-from app.services.yahoo_finance import get_cotizacion
+from app.providers.yahoo_finance import get_cotizacion
 
 # Tiempo de espera entre peticiones a Yahoo
 REQUEST_DELAY = 1.5
@@ -37,17 +37,15 @@ def save_tickers(tickers: list) -> None:
         json.dump(tickers, file, ensure_ascii=False, indent=2)
 
 
-def actualizar_precios() -> None:
-    """Actualiza todas las cotizaciones."""
-
+def actualizar_precios() -> dict:
     tickers = load_tickers()
     timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
     actualizados = 0
     errores = 0
+    resultados = []
 
     for entry in tickers:
-
         ticker = entry["ticker"]
 
         print(f"→ Obteniendo {ticker}...", end=" ")
@@ -55,7 +53,6 @@ def actualizar_precios() -> None:
         resultado = get_cotizacion(ticker)
 
         if resultado["ok"]:
-
             datos = resultado["datos"]
 
             entry["precio_actual"] = datos.get("precio_actual")
@@ -71,33 +68,47 @@ def actualizar_precios() -> None:
             entry["volumen"] = datos.get("volumen")
             entry["ultimo_update"] = timestamp
 
-            print(f"✅ {datos.get('precio_actual')} {datos.get('moneda')}")
             actualizados += 1
 
+            resultados.append({
+                "ticker": ticker,
+                "ok": True,
+                "precio_actual": datos.get("precio_actual"),
+                "moneda": datos.get("moneda"),
+            })
+
+            print(f"✅ {datos.get('precio_actual')}")
+
         else:
-
-            entry["ultimo_update"] = timestamp
-
-            print(f"❌ {resultado.get('mensaje')}")
             errores += 1
 
-        sleep(REQUEST_DELAY)
+            resultados.append({
+                "ticker": ticker,
+                "ok": False,
+                "mensaje": resultado.get("mensaje"),
+            })
+
+            print(f"❌ {resultado.get('mensaje')}")
+
+        sleep(1.5)
 
     save_tickers(tickers)
 
-    print("\n────────────────────────────────────")
-    print(f"Actualizados : {actualizados}")
-    print(f"Errores      : {errores}")
-    print("Proceso finalizado.")
-    print("────────────────────────────────────")
-
-
-def main() -> None:
-    """Punto de entrada del script."""
-
-    print("🔄 Iniciando actualización de cotizaciones...\n")
-    actualizar_precios()
-
+    return {
+        "ok": errores == 0,
+        "actualizados": actualizados,
+        "errores": errores,
+        "resultados": resultados,
+        "ultimo_update": timestamp,
+    }
 
 if __name__ == "__main__":
-    main()
+    print("🔄 Iniciando actualización de precios...")
+
+    resultado = actualizar_precios()
+
+    print(
+        f"\n✅ Actualización completada — "
+        f"{resultado['actualizados']} OK / "
+        f"{resultado['errores']} errores"
+    )
