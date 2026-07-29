@@ -104,3 +104,36 @@ def add_movimiento(
 
 
     return nuevo_movimiento
+
+def eliminar_movimiento(usuario: str, movimiento_id: int):
+
+    movimientos = _load_json(
+        "movimientos_ahorro.json"
+    )
+
+    movimiento_encontrado = None
+
+    for movimiento in movimientos:
+
+        if (
+            movimiento["usuario"] == usuario
+            and movimiento["id"] == movimiento_id
+        ):
+            movimiento_encontrado = movimiento
+            break
+
+    if movimiento_encontrado is None:
+        raise ValueError(
+            f"No se encontró el movimiento {movimiento_id}"
+        )
+
+    movimientos.remove(
+        movimiento_encontrado
+    )
+
+    _save_json(
+        "movimientos_ahorro.json",
+        movimientos
+    )
+
+    return movimiento_encontrado

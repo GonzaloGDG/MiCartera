@@ -1,0 +1,73 @@
+/* =====================================================
+   BASE
+   Estilos generales de toda la aplicación
+===================================================== */
+
+
+/* ── Variables ─────────────────────────────────────── */
+
+:root {
+  --color-bg: #0f172a;
+  --color-surface: #1e293b;
+  --color-surface2: #273549;
+
+  --color-primary: #3b82f6;
+  --color-positive: #22c55e;
+  --color-negative: #ef4444;
+
+  --color-text: #f1f5f9;
+  --color-text-muted: #94a3b8;
+  --color-border: #334155;
+
+  --font-base: 'Inter', sans-serif;
+
+  --radius: 10px;
+}
+
+
+/* ── Reset ──────────────────────────────────────────── */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+
+/* ── Body ───────────────────────────────────────────── */
+
+body {
+  font-family: var(--font-base);
+  background: var(--color-bg);
+  color: var(--color-text);
+  min-height: 100vh;
+}
+
+
+/* ── Contenido principal ───────────────────────────── */
+
+.main-content {
+  max-width: 1400px;
+  margin: 0 auto;
+
+  padding:
+    calc(var(--topbar-height, 56px) + 24px)
+    24px
+    32px;
+}
+
+
+/* ── Responsive general ────────────────────────────── */
+
+@media (max-width: 768px) {
+
+  .main-content {
+    padding:
+      calc(var(--topbar-height, 56px) + 16px)
+      16px
+      24px;
+  }
+
+}

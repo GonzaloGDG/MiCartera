@@ -9,6 +9,8 @@
 
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
 
+    <link rel="stylesheet" href="css/base.css" />
+    <link rel="stylesheet" href="css/components.css" />
     <link rel="stylesheet" href="css/navbar.css" />
     <link rel="stylesheet" href="css/ahorro.css" />
 </head>
@@ -19,28 +21,9 @@
 
     <main class="main-content">
 
-        <!-- Cabecera -->
-
-        <div class="page-header">
-
-            <div>
-                <h1 class="page-title">
-                    Ahorro
-                </h1>
-
-                <span class="last-update" id="lastUpdate"></span>
-            </div>
-
-            <button class="btn-primary" id="btnNuevoMovimiento">
-                + Nuevo movimiento
-            </button>
-
-        </div>
-
-
         <!-- Tarjetas resumen -->
 
-        <div class="summary-cards">
+        <div class="cards-grid">
 
             <div class="card">
                 <span class="card-label">
@@ -85,6 +68,11 @@
                 </span>
             </div>
 
+            <div class="card">
+                <span class="card-label">Liquidez</span>
+                <span class="card-value" id="totalLiquidez">—</span>
+            </div>
+
         </div>
 
 
@@ -96,12 +84,23 @@
 
                 <input type="text" id="buscador" class="input-search" placeholder="🔍 Buscar movimiento..." />
 
+                <div class="table-actions">
+                    <button class="btn btn-primary" id="btnNuevoMovimiento">
+                        + Nuevo movimiento
+                    </button>
+                    <button type="button" class="btn btn-secondary" id="btnModificarLiquidez">
+                        ✏️ Modificar liquidez
+                    </button>
+                    <button type="button" class="btn btn-danger" id="btnEliminarMovimiento" disabled>
+                        🗑️ Eliminar movimiento
+                    </button>
+                </div>
             </div>
 
 
             <div class="table-scroll">
 
-                <table class="tabla-cartera" id="tablaAhorro">
+                <table class="data-table" id="tablaAhorro">
 
                     <thead>
 
@@ -136,6 +135,10 @@
 
             </div>
 
+        </div>
+
+        <div class="last-update-footer">
+            <span class="last-update" id="lastUpdate"></span>
         </div>
 
     </main>
@@ -196,15 +199,15 @@
 
                 <div class="modal-actions">
 
-                    <button type="button" class="btn-secondary" id="btnCancelarMovimiento">
+                    <button type="button" class="btn btn-secondary" id="btnCancelarMovimiento">
                         Cancelar
                     </button>
 
-                    <button type="submit" class="btn-primary" id="btnGuardarMovimiento">
+                    <button type="submit" class="btn btn-primary" id="btnGuardarMovimiento">
                         Guardar
                     </button>
 
-                </div>  
+                </div>
 
             </form>
 
@@ -212,8 +215,200 @@
 
     </div>
 
-    <script src="components/navbar.js"></script>
+    <!-- Modal modificar liquidez -->
+    <div class="modal-overlay" id="modalLiquidez">
 
+        <div class="modal">
+
+            <div class="modal-header">
+
+                <h2>Modificar liquidez</h2>
+
+                <button
+                    type="button"
+                    class="modal-close"
+                    id="btnCerrarModalLiquidez">
+                    ×
+                </button>
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label for="liquidezActual">
+                    Liquidez actual
+                </label>
+
+                <input
+                    type="text"
+                    id="liquidezActual"
+                    readonly />
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label for="nuevaLiquidez">
+                    Nueva liquidez (€)
+                </label>
+
+                <input
+                    type="number"
+                    id="nuevaLiquidez"
+                    min="0"
+                    step="0.01"
+                    placeholder="0,00"
+                    required />
+
+            </div>
+
+
+            <div
+                class="form-error"
+                id="errorLiquidez">
+            </div>
+
+
+            <div class="modal-actions">
+
+                <button
+                    type="button"
+                    class="btn btn-secondary"
+                    id="btnCancelarLiquidez">
+                    Cancelar
+                </button>
+
+                <button
+                    type="button"
+                    class="btn btn-primary"
+                    id="btnGuardarLiquidez">
+                    Guardar
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- Modal confirmar eliminación -->
+    <div class="modal-overlay" id="modalEliminarMovimiento">
+
+        <div class="modal">
+
+            <div class="modal-header">
+
+                <h2>Eliminar movimiento</h2>
+
+                <button
+                    type="button"
+                    class="modal-close"
+                    id="btnCerrarModalEliminar"
+                >
+                    ×
+                </button>
+
+            </div>
+
+
+            <div class="modal-confirmacion">
+
+                <p>
+                    ¿Seguro que quieres eliminar este movimiento?
+                </p>
+
+                <p class="texto-aviso">
+                    Esta acción no se puede deshacer.
+                </p>
+
+            </div>
+
+
+            <div class="modal-actions">
+
+                <button
+                    type="button"
+                    class="btn btn-secondary"
+                    id="btnCancelarEliminar"
+                >
+                    Cancelar
+                </button>
+
+                <button
+                    type="button"
+                    class="btn btn-danger"
+                    id="btnConfirmarEliminar"
+                >
+                    🗑️ Eliminar
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- Modal confirmar modificación de liquidez -->
+    <div class="modal-overlay" id="modalConfirmarLiquidez">
+
+        <div class="modal">
+
+            <div class="modal-header">
+
+                <h2>Modificar liquidez</h2>
+
+                <button
+                    type="button"
+                    class="modal-close"
+                    id="btnCerrarModalConfirmarLiquidez">
+                    ×
+                </button>
+
+            </div>
+
+            <div class="modal-confirmacion">
+
+                <p>
+                    ¿Seguro que quieres modificar la liquidez?
+                </p>
+
+                <p>
+                    Nueva liquidez:
+                    <strong id="valorNuevaLiquidez">—</strong>
+                </p>
+
+                <p class="texto-aviso">
+                    Esta acción modificará el saldo disponible.
+                </p>
+
+            </div>
+
+            <div class="modal-actions">
+
+                <button
+                    type="button"
+                    class="btn btn-secondary"
+                    id="btnCancelarConfirmarLiquidez">
+                    Cancelar
+                </button>
+
+                <button
+                    type="button"
+                    class="btn btn-primary"
+                    id="btnConfirmarLiquidez">
+                    Confirmar
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <script src="components/navbar.js"></script>
+    <script src="components/last-update.js"></script>
     <script src="js/ahorro.js"></script>
 
 </body>

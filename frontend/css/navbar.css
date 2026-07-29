@@ -113,6 +113,21 @@
   color: #ef4444;
 }
 
+.btn-update {
+  background: transparent;
+  border: 1px solid var(--color-border);
+  color: var(--color-text-muted);
+  border-radius: 6px;
+  padding: 6px 12px;
+  font-size: 0.82rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.btn-update:hover {
+  border-color: var(--color-positive);
+  color: var(--color-positive);
+}
+
 /* ── Responsive ─────────────────────────────────────── */
 @media (max-width: 900px) {
   .topbar-title { display: none; }

@@ -2,11 +2,11 @@
 //const API_BASE = 'http://localhost:8000/api';
 
 // ── Sesión ─────────────────────────────────────────────
-const sesion       = JSON.parse(sessionStorage.getItem('usuario') || 'null');
+const sesion = JSON.parse(sessionStorage.getItem('usuario') || 'null');
 const usuarioLogin = sesion?.username || 'admin';
 
 // ── Formateo ───────────────────────────────────────────
-const fmt    = new Intl.NumberFormat('es-ES', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+const fmt = new Intl.NumberFormat('es-ES', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 const fmtEur = (v) => `${fmt.format(v)} €`;
 const fmtPct = (v) => `${v > 0 ? '+' : ''}${fmt.format(v)} %`;
 
@@ -18,9 +18,9 @@ function claseVariacion(v) {
 
 // ── Estado de ordenación + datos ───────────────────────
 let datosCartera = [];
-let liquidez     = 0;
-let sortCol      = null;
-let sortDir      = null;
+let liquidez = 0;
+let sortCol = null;
+let sortDir = null;
 
 // ── Cargar cartera ─────────────────────────────────────
 async function cargarCartera() {
@@ -87,7 +87,7 @@ async function refrescarCartera() {
 
 // ── Ordenación ─────────────────────────────────────────
 function siguienteEstado(col) {
-  if (sortCol !== col)    return 'desc';
+  if (sortCol !== col) return 'desc';
   if (sortDir === 'desc') return 'asc';
   return null;
 }
@@ -103,7 +103,7 @@ function ordenarDatos(datos) {
       va = va.toLowerCase();
       vb = vb.toLowerCase();
       if (va < vb) return sortDir === 'asc' ? -1 : 1;
-      if (va > vb) return sortDir === 'asc' ?  1 : -1;
+      if (va > vb) return sortDir === 'asc' ? 1 : -1;
       return 0;
     }
     return sortDir === 'asc' ? va - vb : vb - va;
@@ -115,7 +115,7 @@ function actualizarCabeceras() {
     th.querySelector('.sort-icon')?.remove();
     if (th.dataset.col === sortCol && sortDir) {
       const icon = document.createElement('span');
-      icon.className   = 'sort-icon';
+      icon.className = 'sort-icon';
       icon.textContent = sortDir === 'asc' ? ' ▲' : ' ▼';
       th.appendChild(icon);
       th.classList.add('th-activo');
@@ -135,8 +135,8 @@ function inicializarOrdenacion() {
       const q = document.getElementById('buscador').value.toLowerCase();
       const filtrados = q
         ? datosCartera.filter(p =>
-            p.nombre.toLowerCase().includes(q) ||
-            p.ticker.toLowerCase().includes(q))
+          p.nombre.toLowerCase().includes(q) ||
+          p.ticker.toLowerCase().includes(q))
         : datosCartera;
 
       renderTabla(ordenarDatos(filtrados));
@@ -156,12 +156,12 @@ function renderTabla(datos) {
   const datosOrdenados = ordenarDatos(datos);
 
   tbody.innerHTML = datosOrdenados.map(p => {
-    const sinDatos     = p.sin_datos;
+    const sinDatos = p.sin_datos;
     const precioActual = sinDatos ? '—' : fmtEur(p.precio_actual);
-    const varHoy       = sinDatos ? '—' : `<span class="${claseVariacion(p.variacion_hoy)}">${fmtPct(p.variacion_hoy)}</span>`;
-    const varCompra    = sinDatos ? '—' : `<span class="${claseVariacion(p.variacion_compra)}">${fmtPct(p.variacion_compra)}</span>`;
-    const totalActual  = sinDatos ? '—' : fmtEur(p.total_actual);
-    const diferencia   = sinDatos ? '—' : `<span class="${claseVariacion(p.diferencia)}">${fmtEur(p.diferencia)}</span>`;
+    const varHoy = sinDatos ? '—' : `<span class="${claseVariacion(p.variacion_hoy)}">${fmtPct(p.variacion_hoy)}</span>`;
+    const varCompra = sinDatos ? '—' : `<span class="${claseVariacion(p.variacion_compra)}">${fmtPct(p.variacion_compra)}</span>`;
+    const totalActual = sinDatos ? '—' : fmtEur(p.total_actual);
+    const diferencia = sinDatos ? '—' : `<span class="${claseVariacion(p.diferencia)}">${fmtEur(p.diferencia)}</span>`;
 
     return `
       <tr class="${sinDatos ? 'fila-sin-datos' : ''}">
@@ -257,17 +257,8 @@ function renderResumen(datos) {
 }
 
 // ── Timestamp ──────────────────────────────────────────
-function actualizarTimestamp(fecha) {
+actualizarTimestamp();
 
-  if (!fecha) {
-    document.getElementById('lastUpdate').textContent =
-      'Sin actualización disponible';
-    return;
-  }
-
-  document.getElementById('lastUpdate').textContent =
-    `Cotizaciones actualizadas: ${fecha}`;
-}
 // ── Buscador ───────────────────────────────────────────
 document.getElementById('buscador').addEventListener('input', (e) => {
   const q = e.target.value.toLowerCase();

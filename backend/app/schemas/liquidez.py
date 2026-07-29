@@ -16,3 +16,8 @@ class LiquidezResponse(BaseModel):
     datos: list[CuentaLiquidez]
     total: float
     moneda: str
+
+class ModificarLiquidezRequest(BaseModel):
+    usuario: str
+    moneda: str
+    importe: float

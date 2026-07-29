@@ -1,0 +1,601 @@
+/* =====================================================
+   COMPONENTES COMUNES
+===================================================== */
+
+
+/* ─────────────────────────────────────────────────────
+   TARJETAS RESUMEN
+───────────────────────────────────────────────────── */
+
+.cards-grid {
+  display: grid;
+
+  grid-template-columns:
+    repeat(
+      auto-fit,
+      minmax(200px, 1fr)
+    );
+
+  gap: 16px;
+
+  margin-bottom: 32px;
+}
+
+
+.card {
+  background: var(--color-surface);
+
+  border: 1px solid var(--color-border);
+
+  border-radius: var(--radius);
+
+  padding: 20px 24px;
+
+  display: flex;
+  flex-direction: column;
+
+  gap: 8px;
+}
+
+
+.card-label {
+  font-size: 0.78rem;
+
+  text-transform: uppercase;
+
+  letter-spacing: 0.5px;
+
+  color: var(--color-text-muted);
+}
+
+
+.card-value {
+  font-size: 1.4rem;
+
+  font-weight: 700;
+}
+
+
+/* ─────────────────────────────────────────────────────
+   COLORES POSITIVO / NEGATIVO
+───────────────────────────────────────────────────── */
+
+.positivo {
+  color: var(--color-positive);
+  font-weight: 600;
+}
+
+
+.negativo {
+  color: var(--color-negative);
+  font-weight: 600;
+}
+
+
+.neutro {
+  color: var(--color-text-muted);
+}
+
+
+/* ─────────────────────────────────────────────────────
+   BOTONES
+───────────────────────────────────────────────────── */
+
+.btn {
+  border-radius: 6px;
+
+  padding: 9px 16px;
+
+  font-family: var(--font-base);
+
+  font-size: 0.85rem;
+
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition: all 0.2s;
+}
+
+
+.btn:hover {
+  filter: brightness(1.1);
+
+  transform: translateY(-1px);
+}
+
+
+.btn:active {
+  transform: translateY(0);
+}
+
+
+.btn:disabled {
+  opacity: 0.4;
+
+  cursor: not-allowed;
+
+  transform: none;
+}
+
+
+/* ── Botón principal ───────────────────────────────── */
+
+.btn-primary {
+  background: var(--color-primary);
+
+  border: 1px solid var(--color-primary);
+
+  color: white;
+}
+
+
+/* ── Botón peligro ─────────────────────────────────── */
+
+.btn-danger {
+  background: var(--color-negative);
+
+  border: 1px solid var(--color-negative);
+
+  color: white;
+}
+
+
+/* ── Botón secundario ──────────────────────────────── */
+
+.btn-secondary {
+  background: transparent;
+
+  border: 1px solid var(--color-border);
+
+  color: var(--color-text-muted);
+}
+
+
+.btn-secondary:hover {
+  color: var(--color-text);
+
+  border-color: var(--color-text-muted);
+}
+
+
+/* ─────────────────────────────────────────────────────
+   TABLAS
+───────────────────────────────────────────────────── */
+
+.table-wrapper {
+  background: var(--color-surface);
+
+  border: 1px solid var(--color-border);
+
+  border-radius: var(--radius);
+
+  overflow: hidden;
+}
+
+
+.table-toolbar {
+  padding: 16px 20px;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: space-between;
+
+  gap: 16px;
+
+  border-bottom: 1px solid var(--color-border);
+}
+
+
+.table-actions {
+  display: flex;
+
+  align-items: center;
+
+  gap: 10px;
+}
+
+
+.table-scroll {
+  overflow-x: auto;
+}
+
+
+/* ── Input búsqueda ────────────────────────────────── */
+
+.input-search {
+  background: var(--color-surface2);
+
+  border: 1px solid var(--color-border);
+
+  border-radius: 6px;
+
+  color: var(--color-text);
+
+  font-family: var(--font-base);
+
+  font-size: 0.88rem;
+
+  padding: 8px 14px;
+
+  width: 280px;
+
+  outline: none;
+
+  transition: border-color 0.2s;
+}
+
+
+.input-search:focus {
+  border-color: var(--color-primary);
+}
+
+
+.input-search::placeholder {
+  color: var(--color-text-muted);
+}
+
+
+/* ── Tabla ─────────────────────────────────────────── */
+
+.data-table {
+  width: 100%;
+
+  border-collapse: collapse;
+
+  font-size: 0.88rem;
+}
+
+
+.data-table thead tr {
+  background: var(--color-surface2);
+}
+
+
+.data-table th {
+  padding: 12px 16px;
+
+  text-align: left;
+
+  font-size: 0.75rem;
+
+  font-weight: 600;
+
+  text-transform: uppercase;
+
+  letter-spacing: 0.5px;
+
+  color: var(--color-text-muted);
+
+  white-space: nowrap;
+}
+
+
+.data-table th.text-right {
+  text-align: right;
+}
+
+
+.data-table tbody tr {
+  border-top: 1px solid var(--color-border);
+
+  transition: background 0.15s;
+}
+
+
+.data-table tbody tr:hover {
+  background: var(--color-surface2);
+}
+
+
+.data-table td {
+  padding: 14px 16px;
+
+  white-space: nowrap;
+}
+
+
+.data-table td.text-right {
+  text-align: right;
+}
+
+
+/* ─────────────────────────────────────────────────────
+   ESTADOS TABLA
+───────────────────────────────────────────────────── */
+
+.fila-loading td,
+.fila-vacia td {
+  text-align: center;
+
+  padding: 40px;
+
+  color: var(--color-text-muted);
+}
+
+
+/* ─────────────────────────────────────────────────────
+   FECHA DE ACTUALIZACIÓN
+───────────────────────────────────────────────────── */
+
+.last-update-footer {
+  margin-top: 10px;
+
+  padding: 0 4px;
+
+  font-size: 0.75rem;
+
+  color: var(--color-text-muted);
+
+  text-align: right;
+}
+
+
+/* ─────────────────────────────────────────────────────
+   MODAL
+───────────────────────────────────────────────────── */
+
+.modal-overlay {
+  display: none;
+
+  position: fixed;
+
+  inset: 0;
+
+  z-index: 1000;
+
+  align-items: center;
+
+  justify-content: center;
+
+  background: rgba(0, 0, 0, 0.65);
+}
+
+
+.modal-overlay.modal-visible {
+  display: flex;
+}
+
+
+.modal {
+  width: 100%;
+
+  max-width: 500px;
+
+  background: var(--color-surface);
+
+  border: 1px solid var(--color-border);
+
+  border-radius: var(--radius);
+
+  padding: 24px;
+
+  box-shadow:
+    0 20px 50px
+    rgba(0, 0, 0, 0.4);
+}
+
+
+/* ── Cabecera modal ────────────────────────────────── */
+
+.modal-header {
+  display: flex;
+
+  align-items: center;
+
+  justify-content: space-between;
+
+  margin-bottom: 24px;
+}
+
+
+.modal-header h2 {
+  font-size: 1.25rem;
+
+  font-weight: 700;
+}
+
+
+.modal-close {
+  background: transparent;
+
+  border: none;
+
+  color: var(--color-text-muted);
+
+  font-size: 1.5rem;
+
+  cursor: pointer;
+
+  padding: 4px 8px;
+}
+
+
+.modal-close:hover {
+  color: var(--color-text);
+}
+
+
+/* ── Formulario ────────────────────────────────────── */
+
+.form-group {
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 7px;
+
+  margin-bottom: 18px;
+}
+
+
+.form-group label {
+  font-size: 0.8rem;
+
+  font-weight: 600;
+
+  color: var(--color-text-muted);
+
+  text-transform: uppercase;
+
+  letter-spacing: 0.4px;
+}
+
+
+.form-group input,
+.form-group select {
+  width: 100%;
+
+  padding: 10px 12px;
+
+  background: var(--color-surface2);
+
+  border: 1px solid var(--color-border);
+
+  border-radius: 6px;
+
+  color: var(--color-text);
+
+  font-family: var(--font-base);
+
+  font-size: 0.9rem;
+
+  outline: none;
+}
+
+
+.form-group input:focus,
+.form-group select:focus {
+  border-color: var(--color-primary);
+}
+
+
+/* ── Acciones modal ────────────────────────────────── */
+
+.modal-actions {
+  display: flex;
+
+  justify-content: flex-end;
+
+  gap: 10px;
+
+  margin-top: 24px;
+}
+
+
+/* ── Error formulario ──────────────────────────────── */
+
+.form-error {
+  min-height: 20px;
+
+  margin-top: 8px;
+
+  color: var(--color-negative);
+
+  font-size: 0.82rem;
+}
+
+
+/* ─────────────────────────────────────────────────────
+   RESPONSIVE COMPONENTES
+───────────────────────────────────────────────────── */
+
+@media (max-width: 768px) {
+
+  .table-toolbar {
+    flex-direction: column;
+
+    align-items: stretch;
+  }
+
+
+  .table-actions {
+    width: 100%;
+
+    flex-direction: column;
+  }
+
+
+  .table-actions .btn {
+    width: 100%;
+  }
+
+
+  .input-search {
+    width: 100%;
+  }
+
+
+  .cards-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+}
+
+
+@media (max-width: 480px) {
+
+  .cards-grid {
+    grid-template-columns: 1fr;
+  }
+
+}
+
+/* ─────────────────────────────────────────────────────
+   PIE DE ACTUALIZACIÓN
+───────────────────────────────────────────────────── */
+
+.last-update-footer {
+  display: flex;
+  align-items: baseline;
+  justify-content: flex-end;
+  gap: 16px;
+  margin-bottom: 28px;
+}
+
+.page-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+.last-update {
+  font-size: 0.78rem;
+  color: var(--color-text-muted);
+}
+
+/* ─────────────────────────────────────────────────────
+   FILA SELECCIONADA
+───────────────────────────────────────────────────── */
+
+.data-table tbody tr.fila-seleccionada {
+  background: var(--color-primary);
+}
+
+.data-table tbody tr.fila-seleccionada:hover {
+  background: var(--color-primary);
+}
+
+.data-table tbody tr.fila-seleccionada td {
+  color: white;
+}
+
+/* ─────────────────────────────────────────────────────
+   CONFIRMACIÓN
+───────────────────────────────────────────────────── */
+
+.modal-confirmacion {
+  padding: 8px 0;
+}
+
+.modal-confirmacion p {
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+.modal-confirmacion .texto-aviso {
+  margin-top: 8px;
+  font-size: 0.8rem;
+  color: var(--color-text-muted);
+}

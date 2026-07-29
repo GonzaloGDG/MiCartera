@@ -35,6 +35,7 @@ const fmtEur = (valor) => {
 // ─────────────────────────────────────────────
 
 let movimientos = [];
+let movimientoSeleccionado = null;
 
 
 // ─────────────────────────────────────────────
@@ -43,7 +44,8 @@ let movimientos = [];
 
 async function cargarAhorro() {
 
-  const tbody = document.getElementById('tablaBody');
+  const tbody =
+    document.getElementById('tablaBody');
 
   tbody.innerHTML = `
     <tr class="fila-loading">
@@ -55,13 +57,18 @@ async function cargarAhorro() {
 
   try {
 
-    const response = await fetch(
-      `${API_BASE}/ahorro?usuario=${usuarioLogin}`
-    );
+    const response =
+      await fetch(
+        `${API_BASE}/ahorro?usuario=${usuarioLogin}`
+      );
 
-    const data = await response.json();
+    const data =
+      await response.json();
 
-    if (!response.ok || !data.ok) {
+    if (
+      !response.ok ||
+      !data.ok
+    ) {
 
       throw new Error(
         data.mensaje ||
@@ -80,10 +87,7 @@ async function cargarAhorro() {
     renderTabla(movimientos);
 
     // Actualizamos fecha
-    document.getElementById(
-      'lastUpdate'
-    ).textContent =
-      `Actualizado: ${new Date().toLocaleString('es-ES')}`;
+    actualizarTimestamp();
 
   } catch (error) {
 
@@ -114,13 +118,34 @@ function renderResumen(data) {
   const totales =
     data.totales_anuales || {};
 
+  const liquidez =
+    data.liquidez || 0;
+
+
+  // ─────────────────────────────────────────
+  // LIQUIDEZ
+  // ─────────────────────────────────────────
+
+  const elementoLiquidez =
+    document.getElementById(
+      'totalLiquidez'
+    );
+
+  elementoLiquidez.textContent =
+    fmtEur(liquidez);
+
+  elementoLiquidez.className =
+    `card-value ${claseVariacion(liquidez)}`;
+
 
   // ─────────────────────────────────────────
   // TOTAL NETO
   // ─────────────────────────────────────────
 
   const elementoNeto =
-    document.getElementById('totalNeto');
+    document.getElementById(
+      'totalNeto'
+    );
 
   elementoNeto.textContent =
     fmtEur(totalNeto);
@@ -144,13 +169,19 @@ function renderResumen(data) {
 
 
   const elemento2024 =
-    document.getElementById('total2024');
+    document.getElementById(
+      'total2024'
+    );
 
   const elemento2025 =
-    document.getElementById('total2025');
+    document.getElementById(
+      'total2025'
+    );
 
   const elemento2026 =
-    document.getElementById('total2026');
+    document.getElementById(
+      'total2026'
+    );
 
 
   elemento2024.textContent =
@@ -205,7 +236,9 @@ function claseVariacion(valor) {
 function renderTabla(datos) {
 
   const tbody =
-    document.getElementById('tablaBody');
+    document.getElementById(
+      'tablaBody'
+    );
 
 
   if (!datos.length) {
@@ -224,51 +257,116 @@ function renderTabla(datos) {
 
 
   tbody.innerHTML =
-    datos.map(movimiento => {
+    datos.map(
+      movimiento => {
 
-      const esIngreso =
-        movimiento.tipo === 'ingreso';
-
-
-      const clase =
-        esIngreso
-          ? 'positivo'
-          : 'negativo';
+        const esIngreso =
+          movimiento.tipo === 'ingreso';
 
 
-      const signo =
-        esIngreso
-          ? '+'
-          : '-';
+        const clase =
+          esIngreso
+            ? 'positivo'
+            : 'negativo';
 
 
-      const tipoTexto =
-        esIngreso
-          ? 'Ingreso'
-          : 'Retirada';
+        const signo =
+          esIngreso
+            ? '+'
+            : '-';
 
 
-      return `
-        <tr>
+        const tipoTexto =
+          esIngreso
+            ? 'Ingreso'
+            : 'Retirada';
 
-          <td>
-            ${movimiento.fecha}
-          </td>
 
-          <td>
-            <span class="${clase}">
-              ${tipoTexto}
-            </span>
-          </td>
+        return `
+          <tr
+            data-id="${movimiento.id}"
+            class="fila-movimiento"
+          >
 
-          <td class="text-right ${clase}">
-            ${signo}${fmtEur(movimiento.importe)}
-          </td>
+            <td>
+              ${movimiento.fecha}
+            </td>
 
-        </tr>
-      `;
+            <td>
+              <span class="${clase}">
+                ${tipoTexto}
+              </span>
+            </td>
 
-    }).join('');
+            <td class="text-right ${clase}">
+              ${signo}${fmtEur(movimiento.importe)}
+            </td>
+
+          </tr>
+        `;
+
+      }
+    ).join('');
+
+
+  // ─────────────────────────────────────────
+  // SELECCIÓN DE MOVIMIENTO
+  // ─────────────────────────────────────────
+
+  document
+    .querySelectorAll('.fila-movimiento')
+    .forEach(
+      fila => {
+
+        fila.addEventListener(
+          'click',
+          () => {
+
+            // Deseleccionar todas las filas
+            document
+              .querySelectorAll(
+                '.fila-movimiento'
+              )
+              .forEach(
+                f => {
+
+                  f.classList.remove(
+                    'fila-seleccionada'
+                  );
+
+                }
+              );
+
+
+            // Seleccionar fila
+            fila.classList.add(
+              'fila-seleccionada'
+            );
+
+
+            // Guardar ID
+            movimientoSeleccionado =
+              Number(
+                fila.dataset.id
+              );
+
+
+            // Activar botón eliminar
+            document.getElementById(
+              'btnEliminarMovimiento'
+            ).disabled = false;
+
+
+            console.log(
+              'Movimiento seleccionado:',
+              movimientoSeleccionado
+            );
+
+          }
+        );
+
+      }
+    );
 
 }
 
@@ -287,12 +385,14 @@ document.addEventListener(
     // ─────────────────────────────────────────
 
     const buscador =
-      document.getElementById('buscador');
+      document.getElementById(
+        'buscador'
+      );
 
 
     buscador.addEventListener(
       'input',
-      (event) => {
+      event => {
 
         const texto =
           event.target.value
@@ -316,14 +416,16 @@ document.addEventListener(
           );
 
 
-        renderTabla(filtrados);
+        renderTabla(
+          filtrados
+        );
 
       }
     );
 
 
     // ─────────────────────────────────────────
-    // REFERENCIAS DEL MODAL
+    // REFERENCIAS MODAL MOVIMIENTO
     // ─────────────────────────────────────────
 
     const modalMovimiento =
@@ -363,7 +465,163 @@ document.addEventListener(
 
 
     // ─────────────────────────────────────────
-    // ABRIR MODAL
+    // REFERENCIAS MODAL ELIMINAR
+    // ─────────────────────────────────────────
+
+    const btnEliminarMovimiento =
+      document.getElementById(
+        'btnEliminarMovimiento'
+      );
+
+
+    const modalEliminarMovimiento =
+      document.getElementById(
+        'modalEliminarMovimiento'
+      );
+
+
+    const btnCerrarModalEliminar =
+      document.getElementById(
+        'btnCerrarModalEliminar'
+      );
+
+
+    const btnCancelarEliminar =
+      document.getElementById(
+        'btnCancelarEliminar'
+      );
+
+
+    const btnConfirmarEliminar =
+      document.getElementById(
+        'btnConfirmarEliminar'
+      );
+
+
+    // ─────────────────────────────────────────
+    // REFERENCIAS MODAL LIQUIDEZ
+    // ─────────────────────────────────────────
+
+    const btnModificarLiquidez =
+      document.getElementById(
+        'btnModificarLiquidez'
+      );
+
+
+    const modalLiquidez =
+      document.getElementById(
+        'modalLiquidez'
+      );
+
+
+    const btnCerrarModalLiquidez =
+      document.getElementById(
+        'btnCerrarModalLiquidez'
+      );
+
+
+    const btnCancelarLiquidez =
+      document.getElementById(
+        'btnCancelarLiquidez'
+      );
+
+
+    const liquidezActual =
+      document.getElementById(
+        'liquidezActual'
+      );
+
+
+    const nuevaLiquidez =
+      document.getElementById(
+        'nuevaLiquidez'
+      );
+
+    const btnGuardarLiquidez =
+      document.getElementById(
+        'btnGuardarLiquidez'
+      );
+
+
+    const errorLiquidez =
+      document.getElementById(
+        'errorLiquidez'
+      );
+
+    // ─────────────────────────────────────────
+    // REFERENCIAS MODAL CONFIRMAR LIQUIDEZ
+    // ─────────────────────────────────────────
+
+    const modalConfirmarLiquidez =
+      document.getElementById(
+        'modalConfirmarLiquidez'
+      );
+
+    const btnCerrarModalConfirmarLiquidez =
+      document.getElementById(
+        'btnCerrarModalConfirmarLiquidez'
+      );
+
+    const btnCancelarConfirmarLiquidez =
+      document.getElementById(
+        'btnCancelarConfirmarLiquidez'
+      );
+
+    const btnConfirmarLiquidez =
+      document.getElementById(
+        'btnConfirmarLiquidez'
+      );
+
+    const valorNuevaLiquidez =
+      document.getElementById(
+        'valorNuevaLiquidez'
+      );
+
+    // ─────────────────────────────────────────
+    // FUNCIONES MODAL ELIMINAR
+    // ─────────────────────────────────────────
+
+    function cerrarModalEliminar() {
+
+      modalEliminarMovimiento
+        .classList.remove(
+          'modal-visible'
+        );
+
+    }
+
+
+    // ─────────────────────────────────────────
+    // FUNCIÓN ABRIR MODAL LIQUIDEZ
+    // ─────────────────────────────────────────
+
+    function abrirModalLiquidez() {
+
+      // Mostrar liquidez actual
+      liquidezActual.value =
+        document.getElementById(
+          'totalLiquidez'
+        ).textContent;
+
+
+      // Limpiar nueva cantidad
+      nuevaLiquidez.value = '';
+
+
+      // Limpiar error
+      errorLiquidez.textContent = '';
+
+
+      // Mostrar modal
+      modalLiquidez.classList.add(
+        'modal-visible'
+      );
+
+    }
+
+
+    // ─────────────────────────────────────────
+    // ABRIR MODAL NUEVO MOVIMIENTO
     // ─────────────────────────────────────────
 
     btnNuevoMovimiento.addEventListener(
@@ -386,7 +644,7 @@ document.addEventListener(
 
 
     // ─────────────────────────────────────────
-    // CERRAR MODAL
+    // CERRAR MODAL NUEVO MOVIMIENTO
     // ─────────────────────────────────────────
 
     function cerrarModal() {
@@ -419,24 +677,193 @@ document.addEventListener(
 
 
     // ─────────────────────────────────────────
-    // GUARDAR MOVIMIENTO
+    // CERRAR MODAL ELIMINAR
+    // ─────────────────────────────────────────
+
+    btnCerrarModalEliminar.addEventListener(
+      'click',
+      cerrarModalEliminar
+    );
+
+
+    btnCancelarEliminar.addEventListener(
+      'click',
+      cerrarModalEliminar
+    );
+
+
+    // ─────────────────────────────────────────
+    // ABRIR MODAL ELIMINAR
+    // ─────────────────────────────────────────
+
+    btnEliminarMovimiento.addEventListener(
+      'click',
+      () => {
+
+        if (
+          movimientoSeleccionado === null
+        ) {
+          return;
+        }
+
+
+        modalEliminarMovimiento
+          .classList.add(
+            'modal-visible'
+          );
+
+      }
+    );
+
+
+    // ─────────────────────────────────────────
+    // CONFIRMAR ELIMINAR MOVIMIENTO
+    // ─────────────────────────────────────────
+
+    btnConfirmarEliminar.addEventListener(
+      'click',
+      async () => {
+
+        if (
+          movimientoSeleccionado === null
+        ) {
+          return;
+        }
+
+
+        btnConfirmarEliminar.disabled =
+          true;
+
+
+        btnConfirmarEliminar.textContent =
+          'Eliminando...';
+
+
+        try {
+
+          const response =
+            await fetch(
+              `${API_BASE}/ahorro/${movimientoSeleccionado}?usuario=${usuarioLogin}`,
+              {
+                method: 'DELETE'
+              }
+            );
+
+
+          const data =
+            await response.json();
+
+
+          if (
+            !response.ok ||
+            !data.ok
+          ) {
+
+            throw new Error(
+              data.mensaje ||
+              'No se pudo eliminar el movimiento'
+            );
+
+          }
+
+
+          // Limpiar selección
+          movimientoSeleccionado =
+            null;
+
+
+          // Cerrar modal
+          cerrarModalEliminar();
+
+
+          // Recargar datos
+          await cargarAhorro();
+
+
+        } catch (error) {
+
+          console.error(error);
+
+
+          alert(
+            `Error al eliminar: ${error.message}`
+          );
+
+
+        } finally {
+
+          btnConfirmarEliminar.disabled =
+            false;
+
+
+          btnConfirmarEliminar.textContent =
+            '🗑️ Eliminar';
+
+
+          btnEliminarMovimiento.disabled =
+            true;
+
+        }
+
+      }
+    );
+
+
+    // ─────────────────────────────────────────
+    // ABRIR MODAL LIQUIDEZ
+    // ─────────────────────────────────────────
+
+    btnModificarLiquidez.addEventListener(
+      'click',
+      abrirModalLiquidez
+    );
+
+
+    // ─────────────────────────────────────────
+    // CERRAR MODAL LIQUIDEZ
+    // ─────────────────────────────────────────
+
+    btnCerrarModalLiquidez.addEventListener(
+      'click',
+      () => {
+
+        modalLiquidez.classList.remove(
+          'modal-visible'
+        );
+
+      }
+    );
+
+
+    btnCancelarLiquidez.addEventListener(
+      'click',
+      () => {
+
+        modalLiquidez.classList.remove(
+          'modal-visible'
+        );
+
+      }
+    );
+
+
+    // ─────────────────────────────────────────
+    // GUARDAR NUEVO MOVIMIENTO
     // ─────────────────────────────────────────
 
     formMovimiento.addEventListener(
       'submit',
-      async (event) => {
+      async event => {
 
         event.preventDefault();
 
 
-        // Tipo
         const tipo =
           document.getElementById(
             'tipoMovimiento'
           ).value;
 
 
-        // Importe
         const importe =
           parseFloat(
             document.getElementById(
@@ -445,36 +872,32 @@ document.addEventListener(
           );
 
 
-        // Fecha
         const fecha =
           document.getElementById(
             'fechaMovimiento'
           ).value;
 
 
-        // Elemento error
         const error =
           document.getElementById(
             'errorMovimiento'
           );
 
 
-        // Botón guardar
         const boton =
           document.getElementById(
             'btnGuardarMovimiento'
           );
 
 
-        // Limpiamos error anterior
         error.textContent = '';
 
 
-        // ─────────────────────────────────────
-        // VALIDAR IMPORTE
-        // ─────────────────────────────────────
-
-        if (!importe || importe <= 0) {
+        // Validar importe
+        if (
+          !importe ||
+          importe <= 0
+        ) {
 
           error.textContent =
             'Introduce un importe válido.';
@@ -484,22 +907,15 @@ document.addEventListener(
         }
 
 
-        // ─────────────────────────────────────
-        // ESTADO BOTÓN
-        // ─────────────────────────────────────
+        boton.disabled =
+          true;
 
-        boton.disabled = true;
 
         boton.textContent =
           'Guardando...';
 
 
         try {
-
-
-          // ───────────────────────────────────
-          // POST NUEVO MOVIMIENTO
-          // ───────────────────────────────────
 
           const response =
             await fetch(
@@ -533,10 +949,6 @@ document.addEventListener(
             await response.json();
 
 
-          // ───────────────────────────────────
-          // COMPROBAR RESPUESTA
-          // ───────────────────────────────────
-
           if (
             !response.ok ||
             !data.ok
@@ -550,17 +962,11 @@ document.addEventListener(
           }
 
 
-          // ───────────────────────────────────
-          // CERRAR MODAL
-          // ───────────────────────────────────
-
+          // Cerrar modal
           cerrarModal();
 
 
-          // ───────────────────────────────────
-          // RECARGAR DATOS
-          // ───────────────────────────────────
-
+          // Recargar datos
           await cargarAhorro();
 
 
@@ -568,16 +974,170 @@ document.addEventListener(
 
           console.error(err);
 
+
           error.textContent =
             err.message;
 
 
         } finally {
 
-          boton.disabled = false;
+          boton.disabled =
+            false;
+
 
           boton.textContent =
             'Guardar';
+
+        }
+
+      }
+    );
+
+
+    // ─────────────────────────────────────────
+    // MODIFICAR LIQUIDEZ
+    // ─────────────────────────────────────────
+
+    btnGuardarLiquidez.addEventListener(
+      'click',
+      () => {
+
+        const importe =
+          parseFloat(nuevaLiquidez.value);
+
+        errorLiquidez.textContent = '';
+
+        // Validar importe
+        if (
+          isNaN(importe) ||
+          importe < 0
+        ) {
+
+          errorLiquidez.textContent =
+            'Introduce una cantidad válida.';
+
+          return;
+        }
+
+        // Mostrar la nueva liquidez en el popup
+        valorNuevaLiquidez.textContent =
+          fmtEur(importe);
+
+        // Guardamos temporalmente el valor
+        btnConfirmarLiquidez.dataset.importe =
+          importe;
+
+        // Cerramos el modal de edición
+        modalLiquidez.classList.remove(
+          'modal-visible'
+        );
+
+        // Abrimos confirmación
+        modalConfirmarLiquidez.classList.add(
+          'modal-visible'
+        );
+
+      }
+    );
+
+    btnCerrarModalConfirmarLiquidez.addEventListener(
+      'click',
+      () => {
+
+        modalConfirmarLiquidez.classList.remove(
+          'modal-visible'
+        );
+
+      }
+    );
+
+
+    btnCancelarConfirmarLiquidez.addEventListener(
+      'click',
+      () => {
+
+        modalConfirmarLiquidez.classList.remove(
+          'modal-visible'
+        );
+
+      }
+    );
+
+    btnConfirmarLiquidez.addEventListener(
+      'click',
+      async () => {
+
+        const importe =
+          parseFloat(
+            btnConfirmarLiquidez.dataset.importe
+          );
+
+        btnConfirmarLiquidez.disabled = true;
+
+        btnConfirmarLiquidez.textContent =
+          'Guardando...';
+
+        try {
+
+          const response =
+            await fetch(
+              `${API_BASE}/liquidez`,
+              {
+                method: 'PUT',
+
+                headers: {
+                  'Content-Type':
+                    'application/json'
+                },
+
+                body: JSON.stringify({
+                  usuario: usuarioLogin,
+                  importe: importe,
+                  moneda: 'EUR'
+                })
+              }
+            );
+
+          const data =
+            await response.json();
+
+          if (
+            !response.ok ||
+            !data.ok
+          ) {
+
+            throw new Error(
+              data.mensaje ||
+              'No se pudo modificar la liquidez'
+            );
+
+          }
+
+          // Cerrar confirmación
+          modalConfirmarLiquidez.classList.remove(
+            'modal-visible'
+          );
+
+          // Limpiar campo
+          nuevaLiquidez.value = '';
+
+          // Recargar datos
+          await cargarAhorro();
+
+        } catch (error) {
+
+          console.error(error);
+
+          alert(
+            `Error al modificar la liquidez: ${error.message}`
+          );
+
+        } finally {
+
+          btnConfirmarLiquidez.disabled = false;
+
+          btnConfirmarLiquidez.textContent =
+            'Confirmar';
 
         }
 
@@ -593,3 +1153,24 @@ document.addEventListener(
 
   }
 );
+
+
+// ─────────────────────────────────────────────
+// TIMESTAMP
+// ─────────────────────────────────────────────
+
+function actualizarTimestamp() {
+
+  const elemento =
+    document.getElementById(
+      'lastUpdate'
+    );
+
+  if (!elemento) {
+    return;
+  }
+
+  elemento.textContent =
+    `Actualizado: ${new Date().toLocaleString('es-ES')}`;
+
+}

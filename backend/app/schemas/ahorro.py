@@ -18,3 +18,4 @@ class AhorroResponse(BaseModel):
     datos: list[MovimientoAhorro]
     total_neto: float
     totales_anuales: dict[str, float]
+    liquidez: float

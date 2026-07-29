@@ -2,6 +2,12 @@
 Lógica de negocio relacionada con cotizaciones.
 """
 
+from pathlib import Path
+import json
+
+BASE_DIR = Path(__file__).resolve().parent.parent
+TICKERS_FILE = BASE_DIR / "data" / "tickers.json"
+
 from app.providers.yahoo_finance import (
     get_cotizacion,
     get_historico,
@@ -22,3 +28,28 @@ def obtener_historico(
         periodo,
         intervalo,
     )
+
+# ─────────────────────────────────────────────
+# ÚLTIMA ACTUALIZACIÓN
+# ─────────────────────────────────────────────
+
+def obtener_ultima_actualizacion():
+
+    with open(
+        TICKERS_FILE,
+        "r",
+        encoding="utf-8"
+    ) as file:
+
+        tickers = json.load(file)
+
+    fechas = [
+        ticker.get("ultimo_update")
+        for ticker in tickers
+        if ticker.get("ultimo_update")
+    ]
+
+    if not fechas:
+        return None
+
+    return max(fechas)
