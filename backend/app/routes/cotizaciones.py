@@ -16,7 +16,9 @@ from app.services.cotizaciones_service import (
 )
 
 
-router = APIRouter()
+router = APIRouter(
+    tags=["Cotizaciones"]
+)
 
 
 @router.get(

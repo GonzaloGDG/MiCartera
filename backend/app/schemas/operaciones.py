@@ -6,7 +6,7 @@ from pydantic import BaseModel
 from typing import Literal
 
 
-class OperacionRequest(BaseModel):
+class OperacionCreateRequest(BaseModel):
     usuario: str
     tipo: Literal["compra", "venta"]
     ticker: str

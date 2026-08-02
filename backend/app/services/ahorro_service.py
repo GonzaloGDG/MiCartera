@@ -8,9 +8,9 @@ from app.repositories.ahorro_repository import (
     eliminar_movimiento,
 )
 
-from app.repositories.liquidez_repository import (
-    get_liquidez_usuario,
-    modificar_liquidez,
+from app.services.liquidez_service import (
+    obtener_importe_liquidez,
+    establecer_liquidez,
 )
 
 from app.services.cotizaciones_service import (
@@ -71,51 +71,24 @@ def obtener_ahorro(usuario: str):
         "ultima_actualizacion": ultima_actualizacion,
     }
 
-def obtener_liquidez(usuario: str):
-    # 2. Obtener liquidez actual
-    cuentas = get_liquidez_usuario(usuario)
 
-    # De momento trabajamos con EUR
-    cuenta_eur = next(
-        (
-            cuenta
-            for cuenta in cuentas
-            if cuenta["moneda"] == "EUR"
-        ),
-        None
-    )
-
-    if cuenta_eur is None:
-        raise ValueError(
-            f"No se encontró cuenta EUR para {usuario}"
-        )
-
-    return cuenta_eur["importe"]
-
-def calcular_nueva_liquidez (usuario: str, tipo: str, importe: float):
-    liquidez_actual = obtener_liquidez(usuario)
+def actualizar_liquidez_movimiento (usuario: str, tipo: str, importe: float):
+    
+    liquidez_actual = obtener_importe_liquidez(usuario)
 
     if tipo == "ingreso":
-        nueva_liquidez = (
-            liquidez_actual + importe
-        )
+        nueva_liquidez = liquidez_actual + importe
 
     elif tipo == "retirada":
-        nueva_liquidez = (
-            liquidez_actual - importe
-        )
+        nueva_liquidez = liquidez_actual - importe
 
     else:
-        raise ValueError(
-            f"Tipo de movimiento no válido: {tipo}"
-        )
+        raise ValueError(...)
 
-    # 4. Guardar nueva liquidez
-    modificar_liquidez(
+    establecer_liquidez(
         usuario=usuario,
         importe=nueva_liquidez,
-        moneda="EUR",
-    )
+)   
 
 def crear_movimiento_ahorro(
     usuario: str,
@@ -133,7 +106,7 @@ def crear_movimiento_ahorro(
     )
 
     # 2. Actualizar liquidez
-    nueva_liquidez = calcular_nueva_liquidez(
+    actualizar_liquidez_movimiento(
         usuario=usuario,
         tipo=tipo,
         importe=importe,
@@ -141,15 +114,13 @@ def crear_movimiento_ahorro(
 
     return {
         "movimiento": movimiento,
-        "liquidez": nueva_liquidez,
     }
     
 def borrar_movimiento_ahorro(
     usuario: str,
-    movimiento_id: int
+    movimiento_id: int,
 ):
 
-    # 1. Buscar el movimiento antes de eliminarlo
     movimientos = get_movimientos_usuario(usuario)
 
     movimiento = next(
@@ -158,7 +129,7 @@ def borrar_movimiento_ahorro(
             for movimiento in movimientos
             if movimiento["id"] == movimiento_id
         ),
-        None
+        None,
     )
 
     if movimiento is None:
@@ -166,69 +137,28 @@ def borrar_movimiento_ahorro(
             f"No se encontró el movimiento {movimiento_id}"
         )
 
-    # 2. Obtener los datos del movimiento
+    # Obtener los datos del movimiento
     tipo = movimiento["tipo"]
     importe = movimiento["importe"]
 
-    # 3. Obtener la liquidez actual
-    liquidez_actual = obtener_liquidez(usuario)
-
-    # 4. Revertir el efecto sobre la liquidez
     if tipo == "ingreso":
-
-        # Si eliminamos un ingreso,
-        # quitamos ese importe de la liquidez
-        nueva_liquidez = (
-            liquidez_actual - importe
-        )
-
+        tipo_inverso = "retirada"
     elif tipo == "retirada":
-
-        # Si eliminamos una retirada,
-        # devolvemos ese importe a la liquidez
-        nueva_liquidez = (
-            liquidez_actual + importe
-        )
-
+        tipo_inverso = "ingreso"
     else:
         raise ValueError(
             f"Tipo de movimiento no válido: {tipo}"
-        )
-
-    # 5. Actualizar liquidez
-    modificar_liquidez(
-        usuario=usuario,
-        importe=nueva_liquidez,
-        moneda="EUR"
     )
 
-    # 6. Eliminar movimiento
+    actualizar_liquidez_movimiento(
+        usuario=usuario,
+        tipo=tipo_inverso,
+        importe=importe,
+    )
+
     movimiento_eliminado = eliminar_movimiento(
         usuario=usuario,
-        movimiento_id=movimiento_id
+        movimiento_id=movimiento_id,
     )
 
     return movimiento_eliminado
-
-def establecer_liquidez(
-    usuario: str,
-    importe: float,
-    moneda: str = "EUR",
-):
-    if importe < 0:
-        raise ValueError(
-            "La liquidez no puede ser negativa"
-        )
-
-    modificar_liquidez(
-        usuario=usuario,
-        importe=importe,
-        moneda=moneda,
-    )
-
-    return {
-        "ok": True,
-        "mensaje": "Liquidez actualizada correctamente",
-        "importe": importe,
-        "moneda": moneda,
-    }

@@ -1,0 +1,90 @@
+[
+  {
+    "id": 1,
+    "usuario": "admin",
+    "tipo": "compra",
+    "ticker": "ANA.MC",
+    "fecha": "2026-04-01",
+    "titulos": 100.0,
+    "precio": 122.1,
+    "comision": 5.22,
+    "moneda": "EUR"
+  },
+  {
+    "id": 2,
+    "usuario": "admin",
+    "tipo": "compra",
+    "ticker": "ANA.MC",
+    "fecha": "2026-04-20",
+    "titulos": 100.0,
+    "precio": 10.0,
+    "comision": 0.0,
+    "moneda": "EUR"
+  },
+  {
+    "id": 3,
+    "usuario": "admin",
+    "tipo": "compra",
+    "ticker": "ANA.MC",
+    "fecha": "string",
+    "titulos": 150.0,
+    "precio": 125.33,
+    "comision": 5.0,
+    "moneda": "EUR"
+  },
+  {
+    "id": 4,
+    "usuario": "admin",
+    "tipo": "compra",
+    "ticker": "ANA.MC",
+    "fecha": "string",
+    "titulos": 150.0,
+    "precio": 125.33,
+    "comision": 5.0,
+    "moneda": "EUR"
+  },
+  {
+    "id": 5,
+    "usuario": "admin",
+    "tipo": "compra",
+    "ticker": "ANA.MC",
+    "fecha": "string",
+    "titulos": 150.0,
+    "precio": 125.33,
+    "comision": 5.0,
+    "moneda": "EUR"
+  },
+  {
+    "id": 6,
+    "usuario": "admin",
+    "tipo": "compra",
+    "ticker": "ANA.MC",
+    "fecha": "string",
+    "titulos": 150.0,
+    "precio": 125.55,
+    "comision": 11.4,
+    "moneda": "EUR"
+  },
+  {
+    "id": 7,
+    "usuario": "admin",
+    "tipo": "compra",
+    "ticker": "ANA.MC",
+    "fecha": "string",
+    "titulos": 23.0,
+    "precio": 125.55,
+    "comision": 11.4,
+    "moneda": "EUR"
+  },
+  {
+    "id": 8,
+    "usuario": "admin",
+    "tipo": "compra",
+    "ticker": "ANA.MC",
+    "fecha": "string",
+    "titulos": 23.0,
+    "precio": 125.55,
+    "comision": 11.4,
+    "moneda": "EUR"
+  }
+]

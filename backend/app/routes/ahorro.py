@@ -9,19 +9,22 @@ from app.services.ahorro_service import (
     obtener_ahorro,
     crear_movimiento_ahorro,
     borrar_movimiento_ahorro,
-    establecer_liquidez,
+    
 
 )
-from app.services.liquidez_service import obtener_liquidez
-
+from app.services.liquidez_service import (
+    obtener_liquidez,
+    establecer_liquidez,
+)
 
 "Schemas"
 from app.schemas.ahorro import AhorroResponse
 from app.schemas.liquidez import ModificarLiquidezRequest
 
 
-router = APIRouter()
-
+router = APIRouter(
+    tags=["Ahorro"]
+)
 
 # ─────────────────────────────────────────────
 # OBTENER AHORRO
@@ -78,14 +81,3 @@ def borrar_movimiento(
         "ok": True,
         "datos": movimiento
     }
-
-@router.put("/liquidez")
-def actualizar_liquidez(datos: ModificarLiquidezRequest):
-
-    resultado = establecer_liquidez(
-        usuario=datos.usuario,
-        importe=datos.importe,
-        moneda=datos.moneda,
-    )
-
-    return resultado

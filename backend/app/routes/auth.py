@@ -11,7 +11,9 @@ from app.schemas.auth import (
     LoginResponse,
 )
 
-router = APIRouter()
+router = APIRouter(
+    tags=["Autenticación"]
+)
 
 
 @router.post(

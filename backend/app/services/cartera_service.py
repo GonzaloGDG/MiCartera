@@ -2,17 +2,20 @@
 Lógica de negocio de la cartera.
 """
 
-from app.repositories.cartera_repository import (
-    get_cartera_usuario,
+from app.repositories.tickers_repository import (
     get_tickers,
 )
 
 from app.schemas.cartera import CarteraResponse
 
+from app.services.fifo_service import (
+    calcular_posiciones_abiertas,
+)
+
 
 def obtener_cartera(usuario: str):
 
-    posiciones = get_cartera_usuario(usuario)
+    posiciones = calcular_posiciones_abiertas(usuario)
     tickers = get_tickers()
 
     resultado = []
@@ -29,13 +32,16 @@ def obtener_cartera(usuario: str):
                 ultimo_update = fecha
 
         precio_actual = ticker.get("precio_actual") or 0
-        precio_compra = pos["precio_compra"]
-        num_titulos = pos["num_titulos"]
+        precio_compra = pos["precio_medio"]
+        num_titulos = pos["titulos"]
 
-        total_actual = round(precio_actual * num_titulos, 2)
+        total_actual = round(
+            precio_actual * num_titulos,
+            2,
+        )
 
         diferencia = round(
-            total_actual - pos["total_invertido"],
+            total_actual - pos["coste_total"],
             2,
         )
 
@@ -52,13 +58,13 @@ def obtener_cartera(usuario: str):
 
         resultado.append({
             "ticker": pos["ticker"],
-            "nombre": pos["nombre"],
+            "nombre": ticker.get("nombre", pos["ticker"]),
             "num_titulos": num_titulos,
             "precio_compra": precio_compra,
             "precio_actual": precio_actual,
             "variacion_hoy": ticker.get("variacion_pct", 0),
             "variacion_compra": variacion_compra,
-            "total_invertido": pos["total_invertido"],
+            "total_invertido": pos["coste_total"],
             "total_actual": total_actual,
             "diferencia": diferencia,
             "moneda": ticker.get("moneda", "EUR"),
