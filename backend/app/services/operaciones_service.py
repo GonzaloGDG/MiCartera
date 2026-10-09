@@ -8,6 +8,7 @@ from app.repositories.operaciones_repository import (
     get_operacion,
     obtener_operaciones,
     delete_operacion,
+    delete_all_operaciones,
 )
 
 from app.repositories.tickers_repository import (
@@ -242,3 +243,11 @@ def actualizar_liquidez_operacion(usuario: str, tipo: str, importe: float):
         importe=nueva_liquidez,
         moneda="EUR",
     )
+    
+""" 
+    Borrado de todas las operaciones de un usuario, 
+    uso principal en las pruebas de rgresión
+"""
+def borrar_todas_operaciones(usuario: str):
+
+    delete_all_operaciones(usuario)

@@ -6,6 +6,7 @@ from app.repositories.ahorro_repository import (
     get_movimientos_usuario,
     add_movimiento,
     eliminar_movimiento,
+    delete_all_movimientos,
 )
 
 from app.services.liquidez_service import (
@@ -162,3 +163,11 @@ def borrar_movimiento_ahorro(
     )
 
     return movimiento_eliminado
+
+""" 
+    Borrado de todos los movimientos de un usuario, 
+    uso principal en las pruebas de rgresión
+"""
+def borrar_todos_movimientos(usuario: str):
+
+    delete_all_movimientos(usuario)

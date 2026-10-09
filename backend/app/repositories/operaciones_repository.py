@@ -118,3 +118,22 @@ def delete_operacion(
     )
 
     return operacion
+
+""" 
+    Borrado de todas las operaciones de un usuario, 
+    uso principal en las pruebas de rgresión
+"""
+def delete_all_operaciones(usuario: str):
+
+    operaciones = load_json(FILENAME)
+
+    operaciones = [
+        operacion
+        for operacion in operaciones
+        if operacion["usuario"] != usuario
+    ]
+
+    save_json(
+        FILENAME,
+        operaciones,
+    )

@@ -104,3 +104,22 @@ def eliminar_movimiento(usuario: str, movimiento_id: int):
     )
 
     return movimiento_encontrado
+
+""" 
+    Borrado de todos los movimientos de un usuario, 
+    uso principal en las pruebas de rgresión
+"""
+def delete_all_movimientos(usuario: str):
+
+    movimientos = load_json(FILENAME)
+
+    movimientos = [
+        movimiento
+        for movimiento in movimientos
+        if movimiento["usuario"] != usuario
+    ]
+
+    save_json(
+        FILENAME,
+        movimientos,
+    )
