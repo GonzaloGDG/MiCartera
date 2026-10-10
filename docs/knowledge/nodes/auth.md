@@ -18,8 +18,10 @@ Gestiona el acceso de usuarios al sistema. La API expone un endpoint de login y 
 1. El frontend envía username y password.
 2. La ruta `/api/login` recibe el payload.
 3. El repository valida la combinación contra `usuarios.json`.
-4. Si la credencial coincide, devuelve `ok: true` con nombre y rol.
+4. Si la credencial coincide, devuelve `ok: true` con username, nombre y rol.
 5. En caso contrario, devuelve un error de credenciales.
+
+El frontend conserva el username autenticado en `sessionStorage` y lo utiliza en las llamadas a la API. No debe sustituirse por un usuario predeterminado.
 
 ## Regla de negocio
 
@@ -49,5 +51,6 @@ Cuando se toque:
 
 - [test_auth.py](../../../backend/app/tests/test_auth.py): comprueba el login válido (incluidos espacios exteriores) y el rechazo de credenciales incorrectas mediante la API.
 - [conftest.py](../../../backend/app/tests/conftest.py): proporciona usuarios aislados para cada prueba, sin leer ni modificar los datos reales.
+- [auth.spec.js](../../../frontend/tests/e2e/auth.spec.js): comprueba en navegador el login, conservación del username, consulta de cartera para esa cuenta, credenciales incorrectas y redirección sin sesión.
 
 Ejecutar con `cd backend && python -m pytest -q app/tests/test_auth.py`.

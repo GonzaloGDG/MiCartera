@@ -57,5 +57,6 @@ Cuando se cambia:
 
 - [test_cartera.py](../../../backend/app/tests/test_cartera.py): comprueba el coste de lotes FIFO parcialmente vendidos, la valoración de cartera en la API y el rechazo de una venta sin compra previa en los datos.
 - [test_operaciones.py](../../../backend/app/tests/test_operaciones.py): comprueba la disponibilidad de títulos antes de vender.
+- [cartera.spec.js](../../../frontend/tests/e2e/cartera.spec.js): comprueba la presentación de los importes, la fecha devuelta por el backend y que los valores recibidos se muestren como texto.
 
 Ejecutar con `cd backend && python -m pytest -q app/tests/test_cartera.py app/tests/test_operaciones.py`.

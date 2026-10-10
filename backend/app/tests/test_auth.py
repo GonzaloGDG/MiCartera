@@ -11,6 +11,7 @@ def test_login_acepta_credenciales_validas_y_espacios_exteriores():
 
     assert response.status_code == 200
     assert response.json()["ok"] is True
+    assert response.json()["username"] == "pruebas_regresion"
     assert response.json()["nombre"] == "Usuario de pruebas"
     assert response.json()["rol"] == "user"
 

@@ -53,5 +53,6 @@ Cuando se toca:
 
 - [test_ahorro.py](../../../backend/app/tests/test_ahorro.py): prueba ingresos y retiradas, reversión al borrar, resumen neto anual, respuesta de la API y rechazo de movimientos inválidos o que exceden el saldo sin persistirlos.
 - [test_regresion.py](../../../backend/app/tests/test_regresion.py): cubre el flujo conjunto de ingreso, compra y borrado de operación.
+- [ahorro.spec.js](../../../frontend/tests/e2e/ahorro.spec.js): recorre en navegador la creación y el borrado de ingresos y retiradas, la edición manual de liquidez y la presentación de errores de API.
 
 Ejecutar con `cd backend && python -m pytest -q app/tests/test_ahorro.py app/tests/test_regresion.py`.

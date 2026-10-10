@@ -10,6 +10,9 @@ Documenta la cobertura actual de pruebas y el enfoque de validación del proyect
 - [backend/app/tests/helpers.py](../../../backend/app/tests/helpers.py)
 - [backend/app/tests/test_regresion.py](../../../backend/app/tests/test_regresion.py)
 - [backend/app/tests](../../../backend/app/tests)
+- [frontend/package.json](../../../frontend/package.json)
+- [frontend/playwright.config.js](../../../frontend/playwright.config.js)
+- [frontend/tests/e2e](../../../frontend/tests/e2e)
 
 ## Qué cubren las pruebas actuales
 
@@ -56,6 +59,33 @@ cd backend
 python -m pytest -q app/tests/test_operaciones.py app/tests/test_cartera.py
 ```
 
+## Pruebas E2E del frontend
+
+Las pruebas de Playwright usan Chromium y navegan la interfaz en un navegador real. La API se simula con interceptores para tener respuestas repetibles; no requieren backend activo, credenciales reales ni acceso a Yahoo Finance.
+
+Preparación inicial:
+
+```bash
+cd frontend
+npm install
+npx playwright install chromium
+```
+
+Ejecución:
+
+```bash
+cd frontend
+npm test
+```
+
+Flujos cubiertos:
+
+- `auth.spec.js`: login correcto conserva y consulta con el username autenticado; login incorrecto muestra el error; una página protegida redirige al login.
+- `ahorro.spec.js`: registro y borrado de ingreso y retirada, actualización manual de liquidez, totales anuales dinámicos y presentación del detalle de error de API.
+- `cartera.spec.js`: usuario correcto en la consulta, totales de cartera, fecha de actualización del servidor, renderizado seguro de datos y aviso de páginas aún no implementadas.
+
+Estas pruebas validan la interacción y presentación en navegador. Las reglas de negocio y persistencia se siguen validando con pytest en el backend. No sustituyen pruebas integradas con backend real.
+
 ## Cuándo ejecutar estas pruebas
 
 Conviene lanzar la validación cuando se está desarrollando o corrigiendo:
@@ -67,6 +97,7 @@ Conviene lanzar la validación cuando se está desarrollando o corrigiendo:
 - cambios en liquidez, ahorro, cartera o operaciones
 - cambios en autenticación, cotizaciones o catálogo de tickers
 - actualización de dependencias o configuración del backend
+- cambios en login, navegación, formularios o renderizado del frontend (ejecutar también Playwright)
 
 ## Resultado esperado
 
@@ -83,5 +114,6 @@ La validación debe terminar con código de salida `0` y mostrar todos los tests
 
 - la suite verifica el comportamiento de la aplicación con datos simulados; no garantiza disponibilidad real de Yahoo Finance
 - no se valida automáticamente el arranque de Docker Compose ni las llamadas a proveedores externos
+- las pruebas Playwright simulan la API; no garantizan por sí solas la integración real frontend-backend
 - conviene ampliar las regresiones cuando se incorporen nuevas funcionalidades
 - si una prueba falla, no se debe mergear el cambio sin corregir el problema

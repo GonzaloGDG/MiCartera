@@ -1,4 +1,4 @@
-function actualizarTimestamp() {
+function actualizarTimestamp(ultimaActualizacion) {
 
   const elemento = document.getElementById('lastUpdate');
 
@@ -6,6 +6,16 @@ function actualizarTimestamp() {
     return;
   }
 
-  elemento.textContent =
-    `Actualizado: ${new Date().toLocaleString('es-ES')}`;
+  if (!ultimaActualizacion) {
+    elemento.textContent = 'Actualización de datos no disponible';
+    return;
+  }
+
+  const fecha = new Date(
+    ultimaActualizacion.replace(' ', 'T')
+  );
+
+  elemento.textContent = Number.isNaN(fecha.getTime())
+    ? 'Actualización de datos no disponible'
+    : `Datos actualizados: ${fecha.toLocaleString('es-ES')}`;
 }

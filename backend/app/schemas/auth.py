@@ -7,6 +7,7 @@ class LoginRequest(BaseModel):
 
 class LoginResponse(BaseModel):
     ok: bool
+    username: str | None = None
     nombre: str | None = None
     rol: str | None = None
     mensaje: str | None = None

@@ -30,6 +30,7 @@ def login(datos: LoginRequest):
     if usuario:
         return {
             "ok": True,
+            "username": usuario["username"],
             "nombre": usuario["nombre"],
             "rol": usuario["rol"],
         }

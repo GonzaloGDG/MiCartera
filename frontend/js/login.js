@@ -1,6 +1,4 @@
 
-const API_BASE = 'http://localhost:8000/api';
-
 const form          = document.getElementById('loginForm');
 const usernameInput = document.getElementById('username');
 const passwordInput = document.getElementById('password');
@@ -60,7 +58,7 @@ form.addEventListener('submit', async (e) => {
   setLoading(true);
 
   try {
-    const response = await fetch(`${API_BASE}/login`, {
+    const response = await fetch(`${window.API_BASE}/login`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -74,13 +72,15 @@ form.addEventListener('submit', async (e) => {
     if (data.ok) {
       // Guardar sesión en sessionStorage
       sessionStorage.setItem('usuario', JSON.stringify({
+        username: data.username,
         nombre: data.nombre,
         rol: data.rol
       }));
       // Redirigir al dashboard
       window.location.href = 'cartera.html';
     } else {
-      loginError.textContent = data.mensaje || 'Credenciales incorrectas';
+      loginError.textContent =
+        mensajeErrorApi(data, 'Credenciales incorrectas');
       loginError.style.display = 'block';
       passwordInput.value = '';
       passwordInput.focus();

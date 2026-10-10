@@ -6,8 +6,6 @@
  * activo según la página actual.
  */
 
-const API_BASE = 'http://localhost:8000/api';
-
 const NAV_ITEMS = [
   { label: '📊 Cartera',              href: 'cartera.html' },
   { label: '💰 Dividendos',           href: 'dividendos.html' },
@@ -31,7 +29,7 @@ function renderNavbar() {
     sessionStorage.getItem('usuario') || 'null'
   );
 
-  if (!sesion) {
+  if (!sesion?.username) {
     window.location.href = 'login.html';
     return;
   }
@@ -68,7 +66,7 @@ function renderNavbar() {
       <div class="topbar-user">
 
         <span class="topbar-username">
-          👤 ${sesion.nombre}
+          👤 <span id="navbarUsername"></span>
         </span>
 
         <button
@@ -96,6 +94,8 @@ function renderNavbar() {
     'afterbegin',
     html
   );
+  document.getElementById('navbarUsername').textContent =
+    sesion.nombre || sesion.username;
 
 
   // ─────────────────────────────────────────────
@@ -128,7 +128,7 @@ function renderNavbar() {
     try {
 
       const response = await fetch(
-        `${API_BASE}/cotizaciones/actualizar`,
+        `${window.API_BASE}/cotizaciones/actualizar`,
         {
           method: 'POST'
         }
@@ -138,7 +138,7 @@ function renderNavbar() {
 
       if (!response.ok) {
         throw new Error(
-          data.mensaje || 'Error al actualizar cotizaciones'
+          mensajeErrorApi(data, 'Error al actualizar cotizaciones')
         );
       }
 
@@ -147,6 +147,9 @@ function renderNavbar() {
       // Si estamos en cartera, recargamos la tabla
       if (typeof refrescarCartera === 'function') {
         await refrescarCartera();
+      }
+      if (typeof refrescarAhorro === 'function') {
+        await refrescarAhorro();
       }
 
       setTimeout(() => {

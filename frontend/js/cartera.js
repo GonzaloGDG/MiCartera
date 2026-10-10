@@ -1,9 +1,7 @@
 
-//const API_BASE = 'http://localhost:8000/api';
-
 // ── Sesión ─────────────────────────────────────────────
 const sesion = JSON.parse(sessionStorage.getItem('usuario') || 'null');
-const usuarioLogin = sesion?.username || 'admin';
+const usuarioLogin = sesion?.username;
 
 // ── Formateo ───────────────────────────────────────────
 const fmt = new Intl.NumberFormat('es-ES', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
@@ -33,26 +31,28 @@ async function cargarCartera() {
     </tr>
   `;
 
+  if (!usuarioLogin) {
+    window.location.href = 'login.html';
+    return;
+  }
+
   try {
+    const query = new URLSearchParams({ usuario: usuarioLogin });
 
     const [resCartera, resLiquidez] = await Promise.all([
-      fetch(`${API_BASE}/cartera?usuario=${usuarioLogin}`),
-      fetch(`${API_BASE}/liquidez?usuario=${usuarioLogin}`)
+      fetch(`${window.API_BASE}/cartera?${query}`),
+      fetch(`${window.API_BASE}/liquidez?${query}`)
     ]);
 
     const dataCartera = await resCartera.json();
     const dataLiquidez = await resLiquidez.json();
 
     if (!resCartera.ok || !dataCartera.ok) {
-      throw new Error(
-        dataCartera.mensaje || 'Error al cargar la cartera'
-      );
+      throw new Error(mensajeErrorApi(dataCartera, 'Error al cargar la cartera'));
     }
 
     if (!resLiquidez.ok || !dataLiquidez.ok) {
-      throw new Error(
-        dataLiquidez.mensaje || 'Error al cargar la liquidez'
-      );
+      throw new Error(mensajeErrorApi(dataLiquidez, 'Error al cargar la liquidez'));
     }
 
     // Guardamos los datos
@@ -65,19 +65,19 @@ async function cargarCartera() {
 
     renderResumen(datosCartera);
 
-    actualizarTimestamp();
+    actualizarTimestamp(dataCartera.ultimo_update);
 
   } catch (err) {
 
     console.error(err);
 
-    tbody.innerHTML = `
-      <tr class="fila-vacia">
-        <td colspan="10">
-          ⚠️ Error al cargar: ${err.message}
-        </td>
-      </tr>
-    `;
+    const row = document.createElement('tr');
+    row.className = 'fila-vacia';
+    const cell = document.createElement('td');
+    cell.colSpan = 10;
+    cell.textContent = `⚠️ Error al cargar: ${err.message}`;
+    row.appendChild(cell);
+    tbody.replaceChildren(row);
   }
 }
 
@@ -135,8 +135,8 @@ function inicializarOrdenacion() {
       const q = document.getElementById('buscador').value.toLowerCase();
       const filtrados = q
         ? datosCartera.filter(p =>
-          p.nombre.toLowerCase().includes(q) ||
-          p.ticker.toLowerCase().includes(q))
+          (p.nombre || '').toLowerCase().includes(q) ||
+          (p.ticker || '').toLowerCase().includes(q))
         : datosCartera;
 
       renderTabla(ordenarDatos(filtrados));
@@ -149,39 +149,78 @@ function renderTabla(datos) {
   const tbody = document.getElementById('tablaBody');
 
   if (!datos.length) {
-    tbody.innerHTML = '<tr class="fila-vacia"><td colspan="10">No hay posiciones en la cartera</td></tr>';
+    const row = document.createElement('tr');
+    row.className = 'fila-vacia';
+    const cell = document.createElement('td');
+    cell.colSpan = 10;
+    cell.textContent = 'No hay posiciones en la cartera';
+    row.appendChild(cell);
+    tbody.replaceChildren(row);
     return;
   }
 
   const datosOrdenados = ordenarDatos(datos);
-
-  tbody.innerHTML = datosOrdenados.map(p => {
+  const filas = datosOrdenados.map(p => {
     const sinDatos = p.sin_datos;
     const precioActual = sinDatos ? '—' : fmtEur(p.precio_actual);
-    const varHoy = sinDatos ? '—' : `<span class="${claseVariacion(p.variacion_hoy)}">${fmtPct(p.variacion_hoy)}</span>`;
-    const varCompra = sinDatos ? '—' : `<span class="${claseVariacion(p.variacion_compra)}">${fmtPct(p.variacion_compra)}</span>`;
     const totalActual = sinDatos ? '—' : fmtEur(p.total_actual);
-    const diferencia = sinDatos ? '—' : `<span class="${claseVariacion(p.diferencia)}">${fmtEur(p.diferencia)}</span>`;
+    const row = document.createElement('tr');
+    if (sinDatos) row.className = 'fila-sin-datos';
 
-    return `
-      <tr class="${sinDatos ? 'fila-sin-datos' : ''}">
-        <td>
-          <div class="nombre-ticker">
-            <span class="nombre-empresa">${p.nombre}</span>
-          </div>
-        </td>
-        <td><span class="badge-ticker">${p.ticker}</span></td>
-        <td class="text-right">${p.num_titulos}</td>
-        <td class="text-right">${fmtEur(p.precio_compra)}</td>
-        <td class="text-right">${precioActual}</td>
-        <td class="text-right">${varHoy}</td>
-        <td class="text-right">${varCompra}</td>
-        <td class="text-right">${fmtEur(p.total_invertido)}</td>
-        <td class="text-right">${totalActual}</td>
-        <td class="text-right">${diferencia}</td>
-      </tr>
-    `;
-  }).join('');
+    const nombreCell = document.createElement('td');
+    const nombre = document.createElement('span');
+    nombre.className = 'nombre-empresa';
+    nombre.textContent = p.nombre || p.ticker;
+    nombreCell.appendChild(nombre);
+    row.appendChild(nombreCell);
+
+    const tickerCell = document.createElement('td');
+    const ticker = document.createElement('span');
+    ticker.className = 'badge-ticker';
+    ticker.textContent = p.ticker;
+    tickerCell.appendChild(ticker);
+    row.appendChild(tickerCell);
+
+    const textValues = [
+      p.num_titulos,
+      fmtEur(p.precio_compra),
+      precioActual,
+    ];
+    textValues.forEach(value => {
+      const cell = document.createElement('td');
+      cell.className = 'text-right';
+      cell.textContent = value;
+      row.appendChild(cell);
+    });
+
+    [
+      ['variacion_hoy', p.variacion_hoy],
+      ['variacion_compra', p.variacion_compra],
+    ].forEach(([key, value]) => {
+      const cell = document.createElement('td');
+      cell.className = 'text-right';
+      cell.textContent = sinDatos ? '—' : fmtPct(value);
+      if (!sinDatos) cell.classList.add(claseVariacion(value));
+      row.appendChild(cell);
+    });
+
+    [fmtEur(p.total_invertido), totalActual].forEach(value => {
+      const cell = document.createElement('td');
+      cell.className = 'text-right';
+      cell.textContent = value;
+      row.appendChild(cell);
+    });
+
+    const differenceCell = document.createElement('td');
+    differenceCell.className = 'text-right';
+    differenceCell.textContent = sinDatos ? '—' : fmtEur(p.diferencia);
+    if (!sinDatos) {
+      differenceCell.classList.add(claseVariacion(p.diferencia));
+    }
+    row.appendChild(differenceCell);
+    return row;
+  });
+  tbody.replaceChildren(...filas);
 }
 
 // ── Renderizar tarjetas resumen ────────────────────────
@@ -257,14 +296,12 @@ function renderResumen(datos) {
 }
 
 // ── Timestamp ──────────────────────────────────────────
-actualizarTimestamp();
-
 // ── Buscador ───────────────────────────────────────────
 document.getElementById('buscador').addEventListener('input', (e) => {
   const q = e.target.value.toLowerCase();
   const filtrados = datosCartera.filter(p =>
-    p.nombre.toLowerCase().includes(q) ||
-    p.ticker.toLowerCase().includes(q)
+    (p.nombre || '').toLowerCase().includes(q) ||
+    (p.ticker || '').toLowerCase().includes(q)
   );
   renderTabla(filtrados);
 });

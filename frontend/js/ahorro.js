@@ -1,7 +1,3 @@
-// const API_BASE = 'http://localhost:8000/api';
-// API_BASE ya está declarada en navbar.js
-
-
 // ─────────────────────────────────────────────
 // SESIÓN
 // ─────────────────────────────────────────────
@@ -10,7 +6,7 @@ const sesion = JSON.parse(
   sessionStorage.getItem('usuario') || 'null'
 );
 
-const usuarioLogin = sesion?.username || 'admin';
+const usuarioLogin = sesion?.username;
 
 
 // ─────────────────────────────────────────────
@@ -47,6 +43,11 @@ async function cargarAhorro() {
   const tbody =
     document.getElementById('tablaBody');
 
+  if (!usuarioLogin) {
+    window.location.href = 'login.html';
+    return;
+  }
+
   tbody.innerHTML = `
     <tr class="fila-loading">
       <td colspan="3">
@@ -57,9 +58,10 @@ async function cargarAhorro() {
 
   try {
 
+    const query = new URLSearchParams({ usuario: usuarioLogin });
     const response =
       await fetch(
-        `${API_BASE}/ahorro?usuario=${usuarioLogin}`
+        `${window.API_BASE}/ahorro?${query}`
       );
 
     const data =
@@ -71,8 +73,7 @@ async function cargarAhorro() {
     ) {
 
       throw new Error(
-        data.mensaje ||
-        'Error al cargar el ahorro'
+        mensajeErrorApi(data, 'Error al cargar el ahorro')
       );
 
     }
@@ -87,19 +88,19 @@ async function cargarAhorro() {
     renderTabla(movimientos);
 
     // Actualizamos fecha
-    actualizarTimestamp();
+    actualizarTimestamp(data.ultima_actualizacion);
 
   } catch (error) {
 
     console.error(error);
 
-    tbody.innerHTML = `
-      <tr class="fila-vacia">
-        <td colspan="3">
-          ⚠️ Error al cargar: ${error.message}
-        </td>
-      </tr>
-    `;
+    const row = document.createElement('tr');
+    row.className = 'fila-vacia';
+    const cell = document.createElement('td');
+    cell.colSpan = 3;
+    cell.textContent = `⚠️ Error al cargar: ${error.message}`;
+    row.appendChild(cell);
+    tbody.replaceChildren(row);
 
   }
 
@@ -154,58 +155,27 @@ function renderResumen(data) {
     `card-value ${claseVariacion(totalNeto)}`;
 
 
-  // ─────────────────────────────────────────
-  // TOTALES ANUALES
-  // ─────────────────────────────────────────
+  const tarjetasAnuales =
+    Object.entries(totales)
+      .sort(([a], [b]) => Number(a) - Number(b))
+      .map(([año, total]) => {
+        const tarjeta = document.createElement('div');
+        tarjeta.className = 'card';
 
-  const total2024 =
-    totales['2024'] || 0;
+        const etiqueta = document.createElement('span');
+        etiqueta.className = 'card-label';
+        etiqueta.textContent = año;
 
-  const total2025 =
-    totales['2025'] || 0;
+        const valor = document.createElement('span');
+        valor.className = `card-value ${claseVariacion(total)}`;
+        valor.textContent = fmtEur(total);
 
-  const total2026 =
-    totales['2026'] || 0;
+        tarjeta.append(etiqueta, valor);
+        return tarjeta;
+      });
 
-
-  const elemento2024 =
-    document.getElementById(
-      'total2024'
-    );
-
-  const elemento2025 =
-    document.getElementById(
-      'total2025'
-    );
-
-  const elemento2026 =
-    document.getElementById(
-      'total2026'
-    );
-
-
-  elemento2024.textContent =
-    fmtEur(total2024);
-
-  elemento2025.textContent =
-    fmtEur(total2025);
-
-  elemento2026.textContent =
-    fmtEur(total2026);
-
-
-  // ─────────────────────────────────────────
-  // COLORES
-  // ─────────────────────────────────────────
-
-  elemento2024.className =
-    `card-value ${claseVariacion(total2024)}`;
-
-  elemento2025.className =
-    `card-value ${claseVariacion(total2025)}`;
-
-  elemento2026.className =
-    `card-value ${claseVariacion(total2026)}`;
+  document.getElementById('totalesAnuales')
+    .replaceChildren(...tarjetasAnuales);
 
 }
 
@@ -255,58 +225,35 @@ function renderTabla(datos) {
 
   }
 
+  const filas = datos.map(movimiento => {
+    const esIngreso = movimiento.tipo === 'ingreso';
+    const clase = esIngreso ? 'positivo' : 'negativo';
+    const signo = esIngreso ? '+' : '-';
+    const tipoTexto = esIngreso ? 'Ingreso' : 'Retirada';
+    const fila = document.createElement('tr');
 
-  tbody.innerHTML =
-    datos.map(
-      movimiento => {
+    fila.dataset.id = movimiento.id;
+    fila.className = 'fila-movimiento';
 
-        const esIngreso =
-          movimiento.tipo === 'ingreso';
+    const fecha = document.createElement('td');
+    fecha.textContent = movimiento.fecha;
+    fila.appendChild(fecha);
 
+    const tipo = document.createElement('td');
+    const etiquetaTipo = document.createElement('span');
+    etiquetaTipo.className = clase;
+    etiquetaTipo.textContent = tipoTexto;
+    tipo.appendChild(etiquetaTipo);
+    fila.appendChild(tipo);
 
-        const clase =
-          esIngreso
-            ? 'positivo'
-            : 'negativo';
+    const importe = document.createElement('td');
+    importe.className = `text-right ${clase}`;
+    importe.textContent = `${signo}${fmtEur(movimiento.importe)}`;
+    fila.appendChild(importe);
 
-
-        const signo =
-          esIngreso
-            ? '+'
-            : '-';
-
-
-        const tipoTexto =
-          esIngreso
-            ? 'Ingreso'
-            : 'Retirada';
-
-
-        return `
-          <tr
-            data-id="${movimiento.id}"
-            class="fila-movimiento"
-          >
-
-            <td>
-              ${movimiento.fecha}
-            </td>
-
-            <td>
-              <span class="${clase}">
-                ${tipoTexto}
-              </span>
-            </td>
-
-            <td class="text-right ${clase}">
-              ${signo}${fmtEur(movimiento.importe)}
-            </td>
-
-          </tr>
-        `;
-
-      }
-    ).join('');
+    return fila;
+  });
+  tbody.replaceChildren(...filas);
 
 
   // ─────────────────────────────────────────
@@ -743,7 +690,7 @@ document.addEventListener(
 
           const response =
             await fetch(
-              `${API_BASE}/ahorro/${movimientoSeleccionado}?usuario=${usuarioLogin}`,
+              `${window.API_BASE}/ahorro/${movimientoSeleccionado}?${new URLSearchParams({ usuario: usuarioLogin })}`,
               {
                 method: 'DELETE'
               }
@@ -760,8 +707,7 @@ document.addEventListener(
           ) {
 
             throw new Error(
-              data.mensaje ||
-              'No se pudo eliminar el movimiento'
+              mensajeErrorApi(data, 'No se pudo eliminar el movimiento')
             );
 
           }
@@ -919,7 +865,7 @@ document.addEventListener(
 
           const response =
             await fetch(
-              `${API_BASE}/ahorro`,
+              `${window.API_BASE}/ahorro`,
               {
                 method: 'POST',
 
@@ -955,8 +901,7 @@ document.addEventListener(
           ) {
 
             throw new Error(
-              data.mensaje ||
-              'No se pudo guardar el movimiento'
+              mensajeErrorApi(data, 'No se pudo guardar el movimiento')
             );
 
           }
@@ -1081,7 +1026,7 @@ document.addEventListener(
 
           const response =
             await fetch(
-              `${API_BASE}/liquidez`,
+              `${window.API_BASE}/liquidez`,
               {
                 method: 'PUT',
 
@@ -1107,8 +1052,7 @@ document.addEventListener(
           ) {
 
             throw new Error(
-              data.mensaje ||
-              'No se pudo modificar la liquidez'
+              mensajeErrorApi(data, 'No se pudo modificar la liquidez')
             );
 
           }
@@ -1153,24 +1097,3 @@ document.addEventListener(
 
   }
 );
-
-
-// ─────────────────────────────────────────────
-// TIMESTAMP
-// ─────────────────────────────────────────────
-
-function actualizarTimestamp() {
-
-  const elemento =
-    document.getElementById(
-      'lastUpdate'
-    );
-
-  if (!elemento) {
-    return;
-  }
-
-  elemento.textContent =
-    `Actualizado: ${new Date().toLocaleString('es-ES')}`;
-
-}
