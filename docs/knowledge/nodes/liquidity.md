@@ -34,3 +34,10 @@ Cuando se cambia:
 - moneda de referencia
 - actualización manual de liquidez
 - cálculo de recursos disponibles
+
+## Pruebas de regresión
+
+- [test_liquidez.py](../../../backend/app/tests/test_liquidez.py): valida consulta del saldo EUR, actualización y creación de una cuenta inexistente y rechazo de saldos negativos.
+- [test_ahorro.py](../../../backend/app/tests/test_ahorro.py) y [test_operaciones.py](../../../backend/app/tests/test_operaciones.py): verifican que los movimientos de ahorro y las compras/ventas actualizan y revierten correctamente la liquidez.
+
+Ejecutar con `cd backend && python -m pytest -q app/tests/test_liquidez.py app/tests/test_ahorro.py app/tests/test_operaciones.py`.

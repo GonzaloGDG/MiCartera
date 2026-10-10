@@ -39,3 +39,10 @@ Cuando se toca:
 - dependencia externa a Yahoo Finance
 - posibles errores si el ticker no existe o la API no devuelve datos
 - actualización de precios debe mantenerse consistente con `tickers.json`
+
+## Pruebas de regresión
+
+- [test_cotizaciones.py](../../../backend/app/tests/test_cotizaciones.py): prueba el formato de cotización e histórico del proveedor Yahoo con respuestas simuladas, el caso de histórico vacío y el paso de parámetros y respuesta en los endpoints. No realiza llamadas de red.
+- [test_tickers.py](../../../backend/app/tests/test_tickers.py): comprueba la actualización del catálogo ante una cotización correcta y otra fallida.
+
+Ejecutar con `cd backend && python -m pytest -q app/tests/test_cotizaciones.py app/tests/test_tickers.py`.

@@ -44,3 +44,10 @@ Cuando se toque:
 
 - la validación actual es muy básica y depende de un JSON local
 - no hay control de sesión persistente ni JWT en la implementación actual
+
+## Pruebas de regresión
+
+- [test_auth.py](../../../backend/app/tests/test_auth.py): comprueba el login válido (incluidos espacios exteriores) y el rechazo de credenciales incorrectas mediante la API.
+- [conftest.py](../../../backend/app/tests/conftest.py): proporciona usuarios aislados para cada prueba, sin leer ni modificar los datos reales.
+
+Ejecutar con `cd backend && python -m pytest -q app/tests/test_auth.py`.

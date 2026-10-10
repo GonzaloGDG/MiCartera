@@ -40,3 +40,10 @@ Cuando se toca:
 
 - la configuración actual es muy simple y depende de una estructura concreta del backend
 - interesa mantener la configuración reproducible antes de introducir servicios adicionales
+
+## Pruebas de regresión
+
+- [test_infrastructure.py](../../../backend/app/tests/test_infrastructure.py): comprueba que la aplicación FastAPI arranque en el cliente de pruebas y que la ruta raíz informe estado `OK`.
+- [test_cotizaciones.py](../../../backend/app/tests/test_cotizaciones.py): valida el uso del proveedor externo con Yahoo simulado, sin depender de la red.
+
+Ejecutar con `cd backend && python -m pytest -q app/tests/test_infrastructure.py app/tests/test_cotizaciones.py`. El arranque de Docker Compose todavía no está cubierto por pruebas automatizadas.

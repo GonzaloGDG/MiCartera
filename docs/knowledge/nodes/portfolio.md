@@ -52,3 +52,10 @@ Cuando se cambia:
 
 - la lógica depende heavily del contenido de `tickers.json`
 - el modelo de posiciones puede no cubrir casos complejos de operaciones fraccionadas o históricas
+
+## Pruebas de regresión
+
+- [test_cartera.py](../../../backend/app/tests/test_cartera.py): comprueba el coste de lotes FIFO parcialmente vendidos, la valoración de cartera en la API y el rechazo de una venta sin compra previa en los datos.
+- [test_operaciones.py](../../../backend/app/tests/test_operaciones.py): comprueba la disponibilidad de títulos antes de vender.
+
+Ejecutar con `cd backend && python -m pytest -q app/tests/test_cartera.py app/tests/test_operaciones.py`.

@@ -48,3 +48,10 @@ Cuando se toca:
 
 - la lógica de sincronización entre ahorro y liquidez debe mantenerse consistente
 - el flujo actual depende de archivos JSON locales
+
+## Pruebas de regresión
+
+- [test_ahorro.py](../../../backend/app/tests/test_ahorro.py): prueba ingresos y retiradas, reversión al borrar, resumen neto anual, respuesta de la API y rechazo de movimientos inválidos o que exceden el saldo sin persistirlos.
+- [test_regresion.py](../../../backend/app/tests/test_regresion.py): cubre el flujo conjunto de ingreso, compra y borrado de operación.
+
+Ejecutar con `cd backend && python -m pytest -q app/tests/test_ahorro.py app/tests/test_regresion.py`.

@@ -28,6 +28,17 @@ def crear_operacion(datos):
     if datos.tipo == "venta":
         validar_venta(datos)
 
+    importe = (
+        datos.titulos * datos.precio + datos.comision
+        if datos.tipo == "compra"
+        else datos.titulos * datos.precio - datos.comision
+    )
+
+    if datos.tipo == "compra" and importe > obtener_importe_liquidez(datos.usuario):
+        raise ValueError(
+            "La liquidez no es suficiente para realizar la compra."
+        )
+
     operacion = add_operacion(
         usuario=datos.usuario,
         tipo=datos.tipo,
@@ -39,18 +50,6 @@ def crear_operacion(datos):
         moneda=datos.moneda,
     )
 
-    if datos.tipo == "compra":
-        importe = (
-            datos.titulos * datos.precio
-            + datos.comision
-        )
-    else:
-        importe = (
-            datos.titulos * datos.precio
-            - datos.comision
-        )
-
-        # 2. Actualizar liquidez
     actualizar_liquidez_operacion(
         usuario=datos.usuario,
         tipo=datos.tipo,
@@ -102,34 +101,45 @@ def borrar_operacion(
     operacion_id: int,
     ):
 
+    operacion = get_operacion(
+        usuario,
+        operacion_id,
+    )
+
+    if operacion is None:
+        raise ValueError(
+            "La operación no existe."
+        )
+
     validar_borrado_operacion(
         usuario,
         operacion_id,
     )
 
-    if tipo == "venta":
-        tipo_inverso = "compra"
-        importe = (
-            datos.titulos * datos.precio
-            + datos.comision
+    tipo = operacion["tipo"]
+
+    if tipo == "compra":
+        actualizar_liquidez_operacion(
+            usuario=usuario,
+            tipo="venta",
+            importe=(
+                operacion["titulos"] * operacion["precio"]
+                + operacion["comision"]
+            ),
         )
-    elif tipo == "compra":
-        tipo_inverso = "venta"
-        importe = (
-            datos.titulos * datos.precio
-            - datos.comision
+    elif tipo == "venta":
+        actualizar_liquidez_operacion(
+            usuario=usuario,
+            tipo="compra",
+            importe=(
+                operacion["titulos"] * operacion["precio"]
+                - operacion["comision"]
+            ),
         )
     else:
         raise ValueError(
             f"Tipo de movimiento no válido: {tipo}"
         )
-
-        # 2. Actualizar liquidez
-    actualizar_liquidez_operacion(
-        usuario=datos.usuario,
-        tipo=tipo_inverso,
-        importe= importe,
-    )
 
     return delete_operacion(
         usuario,

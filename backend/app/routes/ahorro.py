@@ -2,7 +2,7 @@
 Rutas relacionadas con el ahorro.
 """
 
-from fastapi import APIRouter
+from fastapi import APIRouter, HTTPException
 
 "Services"
 from app.services.ahorro_service import (
@@ -53,12 +53,18 @@ def ahorro(usuario: str):
 @router.post("/ahorro")
 def crear_movimiento(datos: dict):
 
-    resultado = crear_movimiento_ahorro(
-        usuario=datos["usuario"],
-        tipo=datos["tipo"],
-        importe=datos["importe"],
-        fecha=datos["fecha"],
-    )
+    try:
+        resultado = crear_movimiento_ahorro(
+            usuario=datos["usuario"],
+            tipo=datos["tipo"],
+            importe=datos["importe"],
+            fecha=datos["fecha"],
+        )
+    except ValueError as error:
+        raise HTTPException(
+            status_code=400,
+            detail=str(error),
+        ) from error
 
     return {
         "ok": True,
@@ -72,10 +78,16 @@ def borrar_movimiento(
     usuario: str
 ):
 
-    movimiento = borrar_movimiento_ahorro(
-        usuario=usuario,
-        movimiento_id=movimiento_id
-    )
+    try:
+        movimiento = borrar_movimiento_ahorro(
+            usuario=usuario,
+            movimiento_id=movimiento_id
+        )
+    except ValueError as error:
+        raise HTTPException(
+            status_code=400,
+            detail=str(error),
+        ) from error
 
     return {
         "ok": True,

@@ -81,10 +81,16 @@ def actualizar_liquidez_movimiento (usuario: str, tipo: str, importe: float):
         nueva_liquidez = liquidez_actual + importe
 
     elif tipo == "retirada":
+        if importe > liquidez_actual:
+            raise ValueError(
+                "La retirada supera la liquidez disponible"
+            )
         nueva_liquidez = liquidez_actual - importe
 
     else:
-        raise ValueError(...)
+        raise ValueError(
+            f"Tipo de movimiento no válido: {tipo}"
+        )
 
     establecer_liquidez(
         usuario=usuario,
@@ -98,7 +104,22 @@ def crear_movimiento_ahorro(
     fecha: str
 ):
 
-    # 1. Guardar movimiento
+    if tipo not in {"ingreso", "retirada"}:
+        raise ValueError(
+            f"Tipo de movimiento no válido: {tipo}"
+        )
+
+    if importe <= 0:
+        raise ValueError(
+            "El importe debe ser mayor que cero"
+        )
+
+    liquidez_actual = obtener_importe_liquidez(usuario)
+    if tipo == "retirada" and importe > liquidez_actual:
+        raise ValueError(
+            "La retirada supera la liquidez disponible"
+        )
+
     movimiento = add_movimiento(
         usuario=usuario,
         tipo=tipo,
@@ -107,14 +128,19 @@ def crear_movimiento_ahorro(
     )
 
     # 2. Actualizar liquidez
-    actualizar_liquidez_movimiento(
+    nueva_liquidez = (
+        liquidez_actual + importe
+        if tipo == "ingreso"
+        else liquidez_actual - importe
+    )
+    establecer_liquidez(
         usuario=usuario,
-        tipo=tipo,
-        importe=importe,
+        importe=nueva_liquidez,
     )
 
     return {
         "movimiento": movimiento,
+        "liquidez": nueva_liquidez,
     }
     
 def borrar_movimiento_ahorro(

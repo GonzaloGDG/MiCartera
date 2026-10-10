@@ -42,6 +42,7 @@ MiCartera es una aplicación web para gestionar una cartera de inversión en bol
 - Si se va a cambiar la lógica de compra/venta: revisar [operations.md](nodes/operations.md)
 - Si se va a ajustar precios o Yahoo Finance: revisar [quotes.md](nodes/quotes.md)
 - Si se va a tocar persistence o archivos JSON: revisar [data.md](nodes/data.md)
+- Si se va a validar un cambio funcional del backend: revisar [tests.md](nodes/tests.md) y lanzar la batería de pruebas indicada
 
 ## Ficheros relevantes del proyecto activo
 

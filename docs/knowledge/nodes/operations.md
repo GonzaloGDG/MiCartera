@@ -42,3 +42,11 @@ Cuando se toca:
 
 - la validación es sensible a datos incompletos
 - la lógica de operación puede estar acoplada a la forma del JSON de persistencia
+
+## Pruebas de regresión
+
+- [test_operaciones.py](../../../backend/app/tests/test_operaciones.py): cubre compra, venta, saldos y títulos, reversión al borrar, orden de listado, regla de borrar solo la última operación y rechazo de ticker, cantidad, precio, comisión, saldo o venta inválidos.
+- [test_cartera.py](../../../backend/app/tests/test_cartera.py): valida FIFO con operaciones de compra y venta.
+- [test_regresion.py](../../../backend/app/tests/test_regresion.py): comprueba conjuntamente ingreso de ahorro, compra y borrado.
+
+Ejecutar con `cd backend && python -m pytest -q app/tests/test_operaciones.py app/tests/test_cartera.py app/tests/test_regresion.py`.

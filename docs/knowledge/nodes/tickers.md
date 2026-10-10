@@ -36,3 +36,10 @@ Cuando se toca:
 - cambios de nombre, moneda o metadatos
 - actualización automática de precios
 - nuevo ticker o eliminación de uno existente
+
+## Pruebas de regresión
+
+- [test_tickers.py](../../../backend/app/tests/test_tickers.py): comprueba que el endpoint devuelva el catálogo ordenado y que el actualizador guarde los datos exitosos sin sobrescribir el ticker cuya cotización falló.
+- [test_operaciones.py](../../../backend/app/tests/test_operaciones.py): comprueba que las operaciones rechacen símbolos no registrados.
+
+Ejecutar con `cd backend && python -m pytest -q app/tests/test_tickers.py app/tests/test_operaciones.py`.

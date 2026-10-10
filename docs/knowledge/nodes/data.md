@@ -44,3 +44,11 @@ Cuando se toca:
 
 - el acceso a datos usa JSON local, no base de datos
 - cualquier cambio en formato puede romper varios módulos del sistema
+
+## Pruebas de regresión
+
+- [conftest.py](../../../backend/app/tests/conftest.py): cada prueba ejecuta contra archivos JSON temporales, aislados y sembrados con datos mínimos; no modifica los datos de ejemplo del repositorio.
+- [test_ahorro.py](../../../backend/app/tests/test_ahorro.py) y [test_operaciones.py](../../../backend/app/tests/test_operaciones.py): comprueban que entradas rechazadas no se persistan y que los cambios válidos queden almacenados.
+- [test_tickers.py](../../../backend/app/tests/test_tickers.py): comprueba la persistencia parcial del actualizador cuando falla una cotización.
+
+Ejecutar toda la batería con `cd backend && python -m pytest -q app/tests`.

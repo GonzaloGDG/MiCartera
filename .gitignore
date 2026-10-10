@@ -1,0 +1,9 @@
+# Python bytecode cache
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+
+# Local virtual environments and pytest cache
+.venv/
+.pytest_cache/

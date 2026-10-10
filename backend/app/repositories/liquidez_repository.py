@@ -26,9 +26,12 @@ def modificar_liquidez(usuario: str, importe: float, moneda: str):
 
     liquidez = load_json(FILENAME)
 
-    for cuenta in liquidez: 
+    for cuenta in liquidez:
 
-        if ( cuenta["usuario"] == usuario and cuenta["moneda"] == moneda ):
+        if (
+            cuenta["usuario"] == usuario
+            and cuenta["moneda"] == moneda
+        ):
 
             cuenta["importe"] = float(importe)
 
@@ -39,7 +42,15 @@ def modificar_liquidez(usuario: str, importe: float, moneda: str):
 
             return cuenta
 
-    raise ValueError(
-        f"No se encontró cuenta de liquidez "
-        f"para {usuario} en {moneda}"
+    liquidez.append({
+        "usuario": usuario,
+        "moneda": moneda,
+        "importe": float(importe),
+    })
+
+    save_json(
+        FILENAME,
+        liquidez,
     )
+
+    return liquidez[-1]

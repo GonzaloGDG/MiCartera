@@ -71,3 +71,7 @@ Los datos de prueba están en JSON bajo `backend/app/data/` y se consumen desde 
 - [quotes.md](quotes.md)
 - [data.md](data.md)
 - [infrastructure.md](infrastructure.md)
+
+## Validación de regresión
+
+Al modificar un dominio backend, ejecutar las pruebas enlazadas en su nodo. Como comprobación integral de cambios en servicios, rutas, repositorios o persistencia, ejecutar la suite completa: `cd backend && python -m pytest -q app/tests`. El alcance actual está detallado en [tests.md](tests.md).
