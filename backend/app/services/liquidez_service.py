@@ -5,7 +5,6 @@ Lógica de negocio de la liquidez.
 from app.repositories.liquidez_repository import (
     get_liquidez_usuario,
     modificar_liquidez,
-    delete_all_operaciones,
 )
 
 
