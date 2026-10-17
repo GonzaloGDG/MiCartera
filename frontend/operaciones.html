@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Operaciones — MiCartera</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/base.css" />
+  <link rel="stylesheet" href="css/components.css" />
+  <link rel="stylesheet" href="css/navbar.css" />
+  <link rel="stylesheet" href="css/operaciones.css" />
+</head>
+<body>
+  <main class="main-content">
+    <section class="cards-grid">
+      <article class="card">
+        <span class="card-label">Total invertido en EUR</span>
+        <span class="card-value" id="totalInvertido">—</span>
+      </article>
+    </section>
+
+    <p class="summary-note">El resumen incluye compras en EUR. Las demás operaciones se muestran en su moneda original.</p>
+    <section class="cards-grid operaciones-years-grid" id="totalesAnuales" aria-label="Inversión de los últimos seis años"></section>
+
+    <section class="table-wrapper">
+      <div class="table-toolbar">
+        <input type="search" id="buscador" class="input-search" placeholder="🔍 Buscar operación..." aria-label="Buscar operación" />
+        <div class="table-actions">
+          <button type="button" class="btn btn-primary" id="btnNuevaOperacion">+ Nueva operación</button>
+          <button type="button" class="btn btn-danger" id="btnEliminarOperacion" disabled>🗑️ Eliminar operación</button>
+        </div>
+      </div>
+      <div class="table-scroll">
+        <table class="data-table" id="tablaOperaciones">
+          <thead>
+            <tr>
+              <th>Fecha</th>
+              <th>Tipo</th>
+              <th>Compañía / Ticker</th>
+              <th class="text-right">Títulos</th>
+              <th class="text-right">Precio</th>
+              <th class="text-right">Comisión</th>
+              <th class="text-right">Importe</th>
+            </tr>
+          </thead>
+          <tbody id="tablaBody">
+            <tr class="fila-loading"><td colspan="7">⏳ Cargando operaciones...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <div class="modal-overlay" id="modalOperacion" role="dialog" aria-modal="true" aria-labelledby="tituloModalOperacion">
+    <section class="modal operaciones-modal">
+      <div class="modal-header">
+        <h2 id="tituloModalOperacion">Nueva operación</h2>
+        <button type="button" class="modal-close" id="btnCerrarModal" aria-label="Cerrar">×</button>
+      </div>
+      <form id="formOperacion">
+        <div class="form-group">
+          <label for="tipoOperacion">Tipo</label>
+          <select id="tipoOperacion" name="tipo" required>
+            <option value="compra">Compra</option>
+            <option value="venta">Venta</option>
+            <option value="dividendo">Dividendo</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="tickerOperacion">Ticker</label>
+          <select id="tickerOperacion" name="ticker" required></select>
+        </div>
+        <div class="form-group">
+          <label for="fechaOperacion">Fecha</label>
+          <input type="date" id="fechaOperacion" name="fecha" required />
+        </div>
+        <div class="form-group">
+          <label for="titulosOperacion">Títulos</label>
+          <input type="number" id="titulosOperacion" name="titulos" min="0.000001" step="any" required />
+        </div>
+        <div class="form-group">
+          <label for="precioOperacion">Precio por título</label>
+          <input type="number" id="precioOperacion" name="precio" min="0" step="any" required />
+        </div>
+        <div class="form-group">
+          <label for="comisionOperacion">Comisión</label>
+          <input type="number" id="comisionOperacion" name="comision" min="0" step="any" value="0" required />
+        </div>
+        <div class="form-group">
+          <label for="monedaOperacion">Moneda</label>
+          <select id="monedaOperacion" name="moneda" required></select>
+        </div>
+        <p class="form-error" id="errorOperacion" role="alert"></p>
+        <div class="modal-actions">
+          <button type="button" class="btn btn-secondary" id="btnCancelarOperacion">Cancelar</button>
+          <button type="submit" class="btn btn-primary" id="btnGuardarOperacion">Guardar</button>
+        </div>
+      </form>
+    </section>
+  </div>
+
+  <script src="components/api.js"></script>
+  <script src="components/navbar.js"></script>
+  <script src="js/operaciones.js"></script>
+</body>
+</html>

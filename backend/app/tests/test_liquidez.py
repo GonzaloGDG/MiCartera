@@ -24,6 +24,24 @@ def test_consultar_liquidez_devuelve_solo_total_eur():
     }
 
 
+def test_endpoint_consulta_liquidez_devuelve_total_eur():
+    response = TestClient(app).get("/api/liquidez?usuario=pruebas_regresion")
+
+    assert response.status_code == 200
+    assert response.json() == {
+        "ok": True,
+        "datos": [
+            {
+                "usuario": "pruebas_regresion",
+                "moneda": "EUR",
+                "importe": 10000.0,
+            }
+        ],
+        "total": 10000.0,
+        "moneda": "EUR",
+    }
+
+
 def test_endpoint_actualiza_liquidez_y_crea_cuenta_si_no_existe():
     response = TestClient(app).put(
         "/api/liquidez",

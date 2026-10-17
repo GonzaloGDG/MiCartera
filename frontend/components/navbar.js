@@ -8,6 +8,7 @@
 
 const NAV_ITEMS = [
   { label: '📊 Cartera',              href: 'cartera.html' },
+  { label: '🧾 Operaciones',          href: 'operaciones.html' },
   { label: '💰 Dividendos',           href: 'dividendos.html' },
   { label: '📈 Fundamentales',        href: 'fundamentales.html' },
   { label: '🏦 Ahorro',               href: 'ahorro.html' },

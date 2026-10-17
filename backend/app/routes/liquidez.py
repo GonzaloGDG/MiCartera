@@ -18,10 +18,7 @@ router = APIRouter(
 @router.get("/liquidez")
 def obtener_liquidez_route(usuario: str):
 
-    return {
-        "ok": True,
-        "importe": obtener_liquidez(usuario),
-    }
+    return obtener_liquidez(usuario)
 
 @router.put("/liquidez")
 def modificar_liquidez_route(

@@ -26,25 +26,31 @@ def obtener_liquidez(usuario: str):
     }
 
 
-def obtener_importe_liquidez(usuario: str):
+def obtener_importe_liquidez(
+    usuario: str,
+    moneda: str = "EUR",
+    valor_por_defecto: float | None = None,
+):
 
     cuentas = get_liquidez_usuario(usuario)
 
-    cuenta_eur = next(
+    cuenta_moneda = next(
         (
             cuenta
             for cuenta in cuentas
-            if cuenta["moneda"] == "EUR"
+            if cuenta["moneda"] == moneda
         ),
         None,
     )
 
-    if cuenta_eur is None:
+    if cuenta_moneda is None:
+        if valor_por_defecto is not None:
+            return valor_por_defecto
         raise ValueError(
-            f"No se encontró cuenta EUR para {usuario}"
+            f"No se encontró cuenta {moneda} para {usuario}"
         )
 
-    return cuenta_eur["importe"]
+    return cuenta_moneda["importe"]
 
 def establecer_liquidez(
     usuario: str,

@@ -23,7 +23,7 @@ tags_metadata = [
     },
     {
         "name": "Operaciones",
-        "description": "Compras y ventas de activos."
+        "description": "Compras, ventas y dividendos de activos."
     },
     {
         "name": "Ahorro",

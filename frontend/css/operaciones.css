@@ -1,0 +1,46 @@
+.operaciones-years-grid {
+  grid-template-columns: repeat(3, minmax(200px, 1fr));
+}
+
+.summary-note {
+  margin: -18px 0 16px;
+  color: var(--color-text-muted);
+  font-size: 0.78rem;
+}
+
+.year-variation {
+  font-size: 0.8rem;
+}
+
+.operaciones-modal {
+  max-height: calc(100vh - 32px);
+  overflow-y: auto;
+}
+
+.operation-error {
+  min-height: 20px;
+  color: var(--color-negative);
+  font-size: 0.82rem;
+}
+
+.company-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.company-name {
+  font-weight: 500;
+}
+
+@media (max-width: 768px) {
+  .operaciones-years-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 480px) {
+  .operaciones-years-grid {
+    grid-template-columns: 1fr;
+  }
+}
