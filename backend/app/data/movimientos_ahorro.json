@@ -61,5 +61,12 @@
     "tipo": "retirada",
     "importe": 500.0,
     "fecha": "2026-10-12"
+  },
+  {
+    "id": 11,
+    "usuario": "admin",
+    "tipo": "ingreso",
+    "importe": 20000.0,
+    "fecha": "2025-10-17"
   }
 ]

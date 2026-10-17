@@ -155,24 +155,38 @@ function renderResumen(data) {
     `card-value ${claseVariacion(totalNeto)}`;
 
 
-  const tarjetasAnuales =
-    Object.entries(totales)
-      .sort(([a], [b]) => Number(a) - Number(b))
-      .map(([año, total]) => {
-        const tarjeta = document.createElement('div');
-        tarjeta.className = 'card';
+  const añoActual = new Date().getFullYear();
+  const primerAño = añoActual - 3;
+  const tarjetasAnuales = Array.from({ length: 4 }, (_, indice) => {
+    const año = primerAño + indice;
+    const total = Number(totales[año] || 0);
+    const totalAnterior = Number(totales[año - 1] || 0);
+    const variacion = totalAnterior > 0
+      ? ((total - totalAnterior) / totalAnterior) * 100
+      : null;
 
-        const etiqueta = document.createElement('span');
-        etiqueta.className = 'card-label';
-        etiqueta.textContent = año;
+    const tarjeta = document.createElement('article');
+    tarjeta.className = 'card';
 
-        const valor = document.createElement('span');
-        valor.className = `card-value ${claseVariacion(total)}`;
-        valor.textContent = fmtEur(total);
+    const etiqueta = document.createElement('span');
+    etiqueta.className = 'card-label';
+    etiqueta.textContent = String(año);
 
-        tarjeta.append(etiqueta, valor);
-        return tarjeta;
-      });
+    const valor = document.createElement('span');
+    valor.className = `card-value ${claseVariacion(total)}`;
+    valor.textContent = fmtEur(total);
+
+    const etiquetaVariacion = document.createElement('span');
+    etiquetaVariacion.className = `year-variation ${
+      variacion === null ? 'neutro' : claseVariacion(variacion)
+    }`;
+    etiquetaVariacion.textContent = variacion === null
+      ? 'Variación: —'
+      : `Variación: ${variacion > 0 ? '+' : ''}${fmt.format(variacion)} %`;
+
+    tarjeta.append(etiqueta, valor, etiquetaVariacion);
+    return tarjeta;
+  });
 
   document.getElementById('totalesAnuales')
     .replaceChildren(...tarjetasAnuales);

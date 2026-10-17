@@ -1,14 +1,14 @@
 # Especificación funcional: cuatro años y variación anual en Ahorro
 
 ## Estado
-- Estado: `draft`
+- Estado: `implemented`
 - [x] Requisito definido
 - [x] Especificación documentada
 - [x] Diseño descrito
-- [ ] Implementación completada
-- [ ] Validado por el asistente
-- [ ] Revisado por el usuario
-- [ ] Especificación marcada como accepted
+- [x] Implementación completada
+- [x] Validado por el asistente
+- [x] Revisado por el usuario
+- [x] Especificación marcada como accepted
 
 ## 1. Contexto y objetivo
 - Qué problema resuelve esta funcionalidad: el resumen anual de la pantalla Ahorro muestra tres tarjetas y queda desequilibrado visualmente, además de no indicar la variación de un año a otro.
@@ -94,12 +94,13 @@
 - Resultado esperado: la tarjeta del año comparado muestra `—` en vez de un porcentaje.
 
 ## 6. Tareas de implementación
-1. [ ] Ajustar la respuesta/agregación del ahorro para incluir los totales de los cuatro años y la base del año previo.
-2. [ ] Renderizar cuatro tarjetas anuales con total neto y variación porcentual.
-3. [ ] Ajustar la cuadrícula a dos columnas y dos filas en escritorio y conservar su adaptación responsive.
-4. [ ] Añadir pruebas backend para años vacíos, importes netos y selección de años.
-5. [ ] Añadir o actualizar pruebas E2E para cuatro tarjetas, orden y porcentaje.
-6. [ ] Ejecutar pruebas relevantes y revisar visualmente la página.
+1. [x] Ajustar la respuesta/agregación del ahorro para incluir los totales de los cuatro años y la base del año previo.
+2. [x] Renderizar cuatro tarjetas anuales con total neto y variación porcentual.
+3. [x] Ajustar la cuadrícula a dos columnas y dos filas en escritorio y conservar su adaptación responsive.
+4. [x] Añadir pruebas backend para años vacíos, importes netos y selección de años.
+5. [x] Añadir o actualizar pruebas E2E para cuatro tarjetas, orden y porcentaje.
+6. [x] Ejecutar pruebas relevantes y comprobar en navegador la cuadrícula de escritorio y móvil.
+7. [x] Revisar visualmente el resultado en navegador y aceptar la especificación.
 
 ## 7. Plan de validación
 ### Backend
@@ -116,10 +117,14 @@
 - Confirmar la presentación `—` si el año anterior no tuvo un total neto positivo.
 - Comprobar que las tarjetas se ven equilibradas y responsive.
 
+### Resultado de validación automatizada
+- Backend: `cd backend && python3 -m pytest -q -p no:cacheprovider app/tests/test_ahorro.py` — 10 pruebas aprobadas.
+- Frontend: `cd frontend && npm test -- --grep ahorro` — 4 pruebas aprobadas; valida orden y número de tarjetas, variaciones, dos columnas en escritorio y una en móvil.
+
 ## 8. Criterios de aceptación
-- [ ] La pantalla Ahorro muestra exactamente cuatro tarjetas de años consecutivos, incluido el actual.
-- [ ] Las tarjetas quedan visualmente equilibradas en dos columnas y dos filas en escritorio.
-- [ ] Cada tarjeta muestra el total neto anual y su variación porcentual frente al año anterior.
-- [ ] La variación usa ingresos menos retiradas y muestra `—` si la base anterior no es positiva.
-- [ ] No cambian el total neto histórico, la liquidez ni el registro de movimientos.
-- [ ] Las pruebas relevantes pasan y no hay regresiones.
+- [x] La pantalla Ahorro muestra exactamente cuatro tarjetas de años consecutivos, incluido el actual.
+- [x] Las tarjetas se distribuyen en dos columnas en escritorio y se adaptan a una columna en móvil.
+- [x] Cada tarjeta muestra el total neto anual y su variación porcentual frente al año anterior.
+- [x] La variación usa ingresos menos retiradas y muestra `—` si la base anterior no es positiva.
+- [x] No cambian el total neto histórico, la liquidez ni el registro de movimientos.
+- [x] Las pruebas relevantes pasan y no hay regresiones.

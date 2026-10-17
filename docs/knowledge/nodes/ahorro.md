@@ -28,6 +28,8 @@ Este nodo cubre la parte financiera de caja del sistema: ahorro personal, movimi
 - `ahorro` representa movimientos de caja o ahorro
 - `liquidez` representa el saldo de efectivo disponible
 - ambas entidades están relacionadas en la API de ahorro
+- el resumen muestra cuatro años naturales completos, con el año anterior adicional como base de comparación
+- los totales anuales son netos (ingresos menos retiradas); la variación no se calcula si el año base es cero o negativo
 
 ## Dependencias
 
@@ -51,8 +53,8 @@ Cuando se toca:
 
 ## Pruebas de regresión
 
-- [test_ahorro.py](../../../backend/app/tests/test_ahorro.py): prueba ingresos y retiradas, reversión al borrar, resumen neto anual, respuesta de la API y rechazo de movimientos inválidos o que exceden el saldo sin persistirlos.
+- [test_ahorro.py](../../../backend/app/tests/test_ahorro.py): prueba ingresos y retiradas, reversión al borrar, resumen neto de los cuatro últimos años y su año base, respuesta de la API y rechazo de movimientos inválidos o que exceden el saldo sin persistirlos.
 - [test_regresion.py](../../../backend/app/tests/test_regresion.py): cubre el flujo conjunto de ingreso, compra y borrado de operación.
-- [ahorro.spec.js](../../../frontend/tests/e2e/ahorro.spec.js): recorre en navegador la creación y el borrado de ingresos y retiradas, la edición manual de liquidez y la presentación de errores de API.
+- [ahorro.spec.js](../../../frontend/tests/e2e/ahorro.spec.js): recorre en navegador la creación y el borrado de ingresos y retiradas, el resumen de cuatro años y porcentajes, la edición manual de liquidez y la presentación de errores de API.
 
 Ejecutar con `cd backend && python -m pytest -q app/tests/test_ahorro.py app/tests/test_regresion.py`.

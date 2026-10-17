@@ -2,6 +2,8 @@
 Lógica de negocio del ahorro.
 """
 
+from datetime import date
+
 from app.repositories.ahorro_repository import (
     get_movimientos_usuario,
     add_movimiento,
@@ -32,8 +34,13 @@ def obtener_ahorro(usuario: str):
     # Total neto histórico
     total_neto = 0
 
-    # Totales por año
-    totales_anuales = {}
+    # Conserva un año previo como base de comparación de los cuatro mostrados.
+    año_actual = date.today().year
+    primer_año_resumen = año_actual - 4
+    totales_anuales = {
+        str(año): 0
+        for año in range(primer_año_resumen, año_actual + 1)
+    }
 
     ultima_actualizacion = obtener_ultima_actualizacion()
 
@@ -59,10 +66,8 @@ def obtener_ahorro(usuario: str):
         # Obtener año
         año = fecha[:4]
 
-        if año not in totales_anuales:
-            totales_anuales[año] = 0
-
-        totales_anuales[año] += importe_neto
+        if año in totales_anuales:
+            totales_anuales[año] += importe_neto
 
     return {
         "ok": True,

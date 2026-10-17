@@ -1,4 +1,5 @@
 import json
+from datetime import date
 
 import pytest
 from fastapi.testclient import TestClient
@@ -42,13 +43,14 @@ def test_movimientos_ahorro_actualizan_liquidez_y_pueden_borrarse():
 
 
 def test_endpoint_ahorro_devuelve_liquidez_y_resumen_anual():
+    año_actual = date.today().year
     response = TestClient(app).post(
         "/api/ahorro",
         json={
             "usuario": "pruebas_regresion",
             "tipo": "ingreso",
             "importe": 300,
-            "fecha": "2024-06-15",
+            "fecha": f"{año_actual}-06-15",
         },
     )
 
@@ -61,8 +63,47 @@ def test_endpoint_ahorro_devuelve_liquidez_y_resumen_anual():
     )
     assert resumen.status_code == 200
     assert resumen.json()["total_neto"] == 300
-    assert resumen.json()["totales_anuales"] == {"2024": 300}
+    assert resumen.json()["totales_anuales"] == {
+        str(año): (300 if año == año_actual else 0)
+        for año in range(año_actual - 4, año_actual + 1)
+    }
     assert resumen.json()["liquidez"] == 10300
+
+
+def test_resumen_incluye_cuatro_años_y_base_anterior_con_variaciones_netas(
+    monkeypatch,
+):
+    class FechaFija(date):
+        @classmethod
+        def today(cls):
+            return cls(2026, 10, 17)
+
+    monkeypatch.setattr("app.services.ahorro_service.date", FechaFija)
+    año_actual = FechaFija.today().year
+
+    crear_movimiento_ahorro(
+        "pruebas_regresion", "ingreso", 1200, f"{año_actual - 3}-01-01"
+    )
+    crear_movimiento_ahorro(
+        "pruebas_regresion", "retirada", 200, f"{año_actual - 3}-02-01"
+    )
+    crear_movimiento_ahorro(
+        "pruebas_regresion", "ingreso", 1000, f"{año_actual - 1}-01-01"
+    )
+    crear_movimiento_ahorro(
+        "pruebas_regresion", "ingreso", 1500, f"{año_actual}-01-01"
+    )
+
+    resumen = obtener_ahorro("pruebas_regresion")
+
+    assert resumen["total_neto"] == 3500
+    assert resumen["totales_anuales"] == {
+        str(año_actual - 4): 0,
+        str(año_actual - 3): 1000,
+        str(año_actual - 2): 0,
+        str(año_actual - 1): 1000,
+        str(año_actual): 1500,
+    }
 
 
 @pytest.mark.parametrize(

@@ -2,6 +2,7 @@ const { test, expect } = require('@playwright/test');
 const { startSession } = require('./session');
 
 test('ahorro refleja un ingreso, muestra años dinámicos y permite borrarlo', async ({ page }) => {
+  const añoActual = new Date().getFullYear();
   const movimientos = [];
   let liquidez = 10000;
   let siguienteId = 1;
@@ -28,7 +29,9 @@ test('ahorro refleja un ingreso, muestra años dinámicos y permite borrarlo', a
               : -movimiento.importe;
             totales[año] = (totales[año] || 0) + importe;
             return totales;
-          }, {}),
+          }, Object.fromEntries(
+            Array.from({ length: 5 }, (_, indice) => [String(añoActual - 4 + indice), 0])
+          )),
           liquidez,
           ultima_actualizacion: '2026-10-01 10:00:00',
         },
@@ -77,19 +80,28 @@ test('ahorro refleja un ingreso, muestra años dinámicos y permite borrarlo', a
   await page.getByRole('button', { name: '+ Nuevo movimiento' }).click();
   await page.locator('#tipoMovimiento').selectOption('ingreso');
   await page.locator('#importeMovimiento').fill('250.50');
-  await page.locator('#fechaMovimiento').fill('2027-04-10');
+  await page.locator('#fechaMovimiento').fill(`${añoActual}-04-10`);
   await page.getByRole('button', { name: 'Guardar', exact: true }).click();
 
   await expect(page.locator('#totalLiquidez')).toHaveText('10.250,50 €');
   await expect(page.locator('#totalNeto')).toHaveText('250,50 €');
-  await expect(page.locator('#totalesAnuales .card-label')).toHaveText(['2027']);
-  await expect(page.locator('#tablaBody')).toContainText('2027-04-10');
+  await expect(page.locator('#totalesAnuales .card')).toHaveCount(4);
+  await expect(page.locator('#totalesAnuales .card-label')).toHaveText(
+    Array.from({ length: 4 }, (_, indice) => String(añoActual - 3 + indice))
+  );
+  await expect(page.locator('#totalesAnuales .year-variation')).toHaveText([
+    'Variación: —',
+    'Variación: —',
+    'Variación: —',
+    'Variación: —',
+  ]);
+  await expect(page.locator('#tablaBody')).toContainText(`${añoActual}-04-10`);
   await expect(page.locator('#lastUpdate')).toContainText('2026');
 
   await page.getByRole('button', { name: '+ Nuevo movimiento' }).click();
   await page.locator('#tipoMovimiento').selectOption('retirada');
   await page.locator('#importeMovimiento').fill('50');
-  await page.locator('#fechaMovimiento').fill('2027-05-10');
+  await page.locator('#fechaMovimiento').fill(`${añoActual}-05-10`);
   await page.getByRole('button', { name: 'Guardar', exact: true }).click();
 
   await expect(page.locator('#totalLiquidez')).toHaveText('10.200,50 €');
@@ -116,6 +128,61 @@ test('ahorro refleja un ingreso, muestra años dinámicos y permite borrarlo', a
   await page.getByRole('button', { name: 'Confirmar', exact: true }).click();
 
   await expect(page.locator('#totalLiquidez')).toHaveText('11.000,00 €');
+});
+
+test('el resumen anual calcula el porcentaje y distribuye cuatro tarjetas en dos columnas', async ({ page }) => {
+  const añoActual = new Date().getFullYear();
+  const totales = {
+    [añoActual - 4]: -100,
+    [añoActual - 3]: 1000,
+    [añoActual - 2]: 0,
+    [añoActual - 1]: 1000,
+    [añoActual]: 1500,
+  };
+
+  await startSession(page);
+  await page.route('http://localhost:8000/api/ahorro**', async route => {
+    await route.fulfill({
+      json: {
+        ok: true,
+        datos: [],
+        total_neto: 3500,
+        totales_anuales: totales,
+        liquidez: 10000,
+        ultima_actualizacion: null,
+      },
+    });
+  });
+
+  await page.goto('/ahorro.html');
+
+  const tarjetas = page.locator('#totalesAnuales .card');
+  await expect(tarjetas).toHaveCount(4);
+  await expect(page.locator('#totalesAnuales .card-label')).toHaveText(
+    Array.from({ length: 4 }, (_, indice) => String(añoActual - 3 + indice))
+  );
+  await expect(tarjetas.nth(0).locator('.card-value')).toHaveText('1000,00 €');
+  await expect(tarjetas.nth(0).locator('.year-variation')).toHaveText('Variación: —');
+  await expect(tarjetas.nth(1).locator('.card-value')).toHaveText('0,00 €');
+  await expect(tarjetas.nth(1).locator('.year-variation')).toHaveText(
+    'Variación: -100,00 %'
+  );
+  await expect(tarjetas.nth(2).locator('.year-variation')).toHaveText('Variación: —');
+  await expect(tarjetas.nth(3).locator('.card-value')).toHaveText('1500,00 €');
+  await expect(tarjetas.nth(3).locator('.year-variation')).toHaveText(
+    'Variación: +50,00 %'
+  );
+
+  const columnas = await page.locator('#totalesAnuales').evaluate(element =>
+    getComputedStyle(element).gridTemplateColumns.split(' ').length
+  );
+  expect(columnas).toBe(2);
+
+  await page.setViewportSize({ width: 390, height: 844 });
+  const columnasMovil = await page.locator('#totalesAnuales').evaluate(element =>
+    getComputedStyle(element).gridTemplateColumns.split(' ').length
+  );
+  expect(columnasMovil).toBe(1);
 });
 
 test('muestra el detalle de error del backend al guardar una retirada rechazada', async ({ page }) => {

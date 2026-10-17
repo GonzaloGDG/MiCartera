@@ -38,3 +38,17 @@
 
   font-weight: 600;
 }
+
+.ahorro-years-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.year-variation {
+  font-size: 0.85rem;
+}
+
+@media (max-width: 480px) {
+  .ahorro-years-grid {
+    grid-template-columns: 1fr;
+  }
+}
