@@ -9,9 +9,11 @@ Esta capa ofrece la interfaz web del sistema. Se construye con HTML, CSS y JavaS
 - [frontend/login.html](../../../frontend/login.html)
 - [frontend/cartera.html](../../../frontend/cartera.html)
 - [frontend/ahorro.html](../../../frontend/ahorro.html)
+- [frontend/operaciones.html](../../../frontend/operaciones.html)
 - [frontend/js/login.js](../../../frontend/js/login.js)
 - [frontend/js/cartera.js](../../../frontend/js/cartera.js)
 - [frontend/js/ahorro.js](../../../frontend/js/ahorro.js)
+- [frontend/js/operaciones.js](../../../frontend/js/operaciones.js)
 - [frontend/components/api.js](../../../frontend/components/api.js)
 - [frontend/components/navbar.js](../../../frontend/components/navbar.js)
 - [frontend/components/last-update.js](../../../frontend/components/last-update.js)
@@ -25,6 +27,8 @@ Esta capa ofrece la interfaz web del sistema. Se construye con HTML, CSS y JavaS
 - la sesión conserva el `username` devuelto por el backend para identificar al usuario en las peticiones
 - la vista de cartera consume `/api/cartera`
 - la vista de ahorro consulta `/api/ahorro`
+- la vista de operaciones consulta `/api/operaciones` y `/api/tickers`, permite registrar compra, venta y dividendo, y borrar la última operación del ticker
+- la vista de operaciones presenta el total invertido y los seis últimos totales anuales de compras en EUR; las demás divisas se muestran en la moneda original
 - la UI maneja errores y renderiza resultados como texto para no interpretar datos de API como HTML
 - las marcas de actualización usan la fecha devuelta por el backend; no la hora local de renderizado
 - las páginas de navegación aún no implementadas muestran un aviso temporal de página no disponible
@@ -47,7 +51,7 @@ Cuando se cambia:
 
 ## Pruebas de regresión
 
-Las pruebas E2E de Playwright cubren login e identidad de usuario, operaciones de ahorro/liquidez disponibles en la UI, cartera, fecha de actualización, manejo visible de errores y páginas provisionales. Ejecutar desde `frontend/` con `npm test`; la API se intercepta y simula, sin iniciar el backend.
+Las pruebas E2E de Playwright cubren login e identidad de usuario, operaciones de ahorro/liquidez disponibles en la UI, cartera, compra/venta/dividendo y borrado en la pantalla de operaciones, fecha de actualización, manejo visible de errores y páginas provisionales. Ejecutar desde `frontend/` con `npm test`; la API se intercepta y simula, sin iniciar el backend.
 
 ## Riesgos
 

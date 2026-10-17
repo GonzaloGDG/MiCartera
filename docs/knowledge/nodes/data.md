@@ -24,6 +24,8 @@ El proyecto usa Pydantic para validar la entrada y salida de la API. La lógica 
 - liquidez
 - cartera
 
+Cada registro de `operaciones.json` conserva `id`, `usuario`, `tipo`, `ticker`, `fecha`, `titulos`, `precio`, `comision` y `moneda`. Los tipos admitidos son `compra`, `venta` y `dividendo`; la confirmación de compra a precio cero es un dato de solicitud y no forma parte del registro persistido. El resumen de inversión agrega solo compras en EUR.
+
 ## Dependencias
 
 - [auth.md](auth.md)
@@ -49,6 +51,7 @@ Cuando se toca:
 
 - [conftest.py](../../../backend/app/tests/conftest.py): cada prueba ejecuta contra archivos JSON temporales, aislados y sembrados con datos mínimos; no modifica los datos de ejemplo del repositorio.
 - [test_ahorro.py](../../../backend/app/tests/test_ahorro.py) y [test_operaciones.py](../../../backend/app/tests/test_operaciones.py): comprueban que entradas rechazadas no se persistan y que los cambios válidos queden almacenados.
+- [test_operaciones.py](../../../backend/app/tests/test_operaciones.py): también valida el impacto y la reversión de liquidez por moneda, el resumen de compras en EUR y las reglas de títulos de ventas y dividendos.
 - [test_tickers.py](../../../backend/app/tests/test_tickers.py): comprueba la persistencia parcial del actualizador cuando falla una cotización.
 
 Ejecutar toda la batería con `cd backend && python -m pytest -q app/tests`.

@@ -32,6 +32,8 @@ La cartera se calcula en función de:
 - precio actual del ticker
 - variación porcentual del ticker
 
+Las compras y ventas registradas en operaciones determinan las posiciones abiertas mediante FIFO. Los dividendos afectan a la liquidez, pero no modifican los títulos de la posición.
+
 ## Dependencias
 
 - [operations.md](operations.md)
@@ -50,7 +52,7 @@ Cuando se cambia:
 
 ## Riesgos
 
-- la lógica depende heavily del contenido de `tickers.json`
+- la lógica depende del contenido de `tickers.json`
 - el modelo de posiciones puede no cubrir casos complejos de operaciones fraccionadas o históricas
 
 ## Pruebas de regresión

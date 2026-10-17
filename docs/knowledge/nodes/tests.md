@@ -25,7 +25,7 @@ Pruebas por dominio:
 - `test_auth.py`: login válido y credenciales incorrectas.
 - `test_liquidez.py`: consulta, actualización, alta de cuenta y saldo negativo.
 - `test_ahorro.py`: ingresos, retiradas, borrado, totales anuales y validación de entradas.
-- `test_operaciones.py`: compras, ventas, liquidez, títulos, borrado y validaciones.
+- `test_operaciones.py`: compras, ventas y dividendos; creación y borrado por API; liquidez por moneda y reversión; resumen anual EUR; títulos disponibles; borrado de la última operación; y validaciones, incluida la confirmación para compras a precio cero.
 - `test_cartera.py`: coste FIFO, valoración y operaciones inconsistentes.
 - `test_cotizaciones.py`: respuesta de cotización e histórico y proveedor simulado.
 - `test_tickers.py`: orden del catálogo y actualización parcial ante fallos externos.
@@ -83,8 +83,16 @@ Flujos cubiertos:
 - `auth.spec.js`: login correcto conserva y consulta con el username autenticado; login incorrecto muestra el error; una página protegida redirige al login.
 - `ahorro.spec.js`: registro y borrado de ingreso y retirada, actualización manual de liquidez, totales anuales dinámicos y presentación del detalle de error de API.
 - `cartera.spec.js`: usuario correcto en la consulta, totales de cartera, fecha de actualización del servidor, renderizado seguro de datos y aviso de páginas aún no implementadas.
+- `operaciones.spec.js`: resumen y seis tarjetas anuales, compra a precio cero con confirmación, selector de ticker y títulos para dividendo, selección de ticker para venta y borrado de la última operación con el usuario de sesión.
 
 Estas pruebas validan la interacción y presentación en navegador. Las reglas de negocio y persistencia se siguen validando con pytest en el backend. No sustituyen pruebas integradas con backend real.
+
+Para ejecutar solo los flujos E2E de operaciones:
+
+```bash
+cd frontend
+npx playwright test tests/e2e/operaciones.spec.js
+```
 
 ## Cuándo ejecutar estas pruebas
 
